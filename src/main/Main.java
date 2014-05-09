@@ -1,5 +1,8 @@
 package main;
 
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
+
 /**
  * The main class of application. 
  * 
@@ -17,6 +20,28 @@ public class Main
      */
     public static void main(String[] args)
     {
-        System.out.println("Hello World!");
+        Main m = new Main();
+        m.showFirstSWTWindow();
+    }
+    
+    private void showFirstSWTWindow()
+    {
+        Display display = new Display();
+
+        Shell shell = new Shell(display);
+        shell.setText("SWT Hello");
+        shell.setSize(600, 500);
+        shell.open();
+
+        while (!shell.isDisposed())
+        {
+            if (!display.readAndDispatch())
+            {
+                display.sleep();
+            }
+        }
+
+        display.dispose();
+        
     }
 }
