@@ -57,8 +57,10 @@ public class WindowManager
         window = new Shell(display);
 
         window.setText("FastPoints");
-        window.setSize(1200, 900);
+        window.setSize(1200, 800);
         // window.setMaximized(true);
+        
+        window.addPaintListener(new GameFieldPaintListener(display));
     }
 
     private void initMenuBar()
@@ -106,7 +108,7 @@ public class WindowManager
         window.setMenuBar(menuBar);
     }
 
-    class newGameItemListener implements SelectionListener
+    private class newGameItemListener implements SelectionListener
     {
         public void widgetSelected(SelectionEvent event)
         {
@@ -120,7 +122,7 @@ public class WindowManager
         }
     }
 
-    class gameExitItemListener implements SelectionListener
+    private class gameExitItemListener implements SelectionListener
     {
         public void widgetSelected(SelectionEvent event)
         {
@@ -135,7 +137,7 @@ public class WindowManager
         }
     }
 
-    class getHelpItemListener implements SelectionListener
+    private class getHelpItemListener implements SelectionListener
     {
         public void widgetSelected(SelectionEvent event)
         {
@@ -152,7 +154,7 @@ public class WindowManager
         }
     }
 
-    class aboutItemListener implements SelectionListener
+    private class aboutItemListener implements SelectionListener
     {
         public void widgetSelected(SelectionEvent event)
         {
