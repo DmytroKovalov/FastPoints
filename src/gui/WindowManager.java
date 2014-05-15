@@ -1,5 +1,7 @@
 package gui;
 
+import model.FieldModel;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -60,7 +62,11 @@ public class WindowManager
         window.setSize(1200, 800);
         // window.setMaximized(true);
         
-        window.addPaintListener(new GameFieldPaintListener(display));
+        //TODO: move into Main
+        FieldModel model = new FieldModel(20, 20);
+        model.initRandomly();
+        
+        window.addPaintListener(new GameFieldPaintListener(display, model));
     }
 
     private void initMenuBar()
