@@ -1,6 +1,6 @@
 package gui;
 
-import model.FieldModel;
+import model.Field11;
 import model.PointState;
 
 import org.eclipse.swt.SWT;
@@ -21,16 +21,21 @@ public class GameFieldPaintListener implements PaintListener
 {
     private Display display;
     
-    private FieldModel model;
+    private Field11 field11;
     
-    private final static int STEP = 20;
+    public final static int STEP = 20;
 
-    private final static int HALF_STEP = STEP / 2;
+    public final static int HALF_STEP = STEP / 2;
 
-    public GameFieldPaintListener(Display display, FieldModel model)
+    public GameFieldPaintListener(Display display, Field11 field11)
     {
         this.display = display;
-        this.model = model;
+        this.field11 = field11;
+    }
+    
+    public Field11 getField()
+    {
+        return field11;
     }
 
     @Override
@@ -67,8 +72,8 @@ public class GameFieldPaintListener implements PaintListener
     
     private void drawPointsOnGrid(GC gc)
     {
-        int width = STEP*model.getWidth();
-        int height= STEP*model.getHeight();
+        int width = STEP*field11.getWidth();
+        int height= STEP*field11.getHeight();
         Color color;
         for (int x = HALF_STEP; x < width; x += STEP)
         {
@@ -76,7 +81,7 @@ public class GameFieldPaintListener implements PaintListener
             {
                 int i = x / STEP;
                 int j = y / STEP;
-                PointState pointState =  model.getField().getGrid()[i][j];
+                PointState pointState =  field11.getPointState(i, j);
                 
                 switch(pointState)
                 {

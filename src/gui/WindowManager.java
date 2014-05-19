@@ -1,10 +1,14 @@
 package gui;
 
-import model.FieldModel;
+import model.Field11;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.events.ShellEvent;
+import org.eclipse.swt.events.ShellListener;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
@@ -28,12 +32,25 @@ public class WindowManager
      * main window
      */
     private Shell window;
+    
+    private GameFieldPaintListener painter;
+    
+    //TODO: remove this variable
+    private WindowShellListener windowListner;
 
     /**
      * default constructor
+     * @param field11 
      */
-    public WindowManager()
+    public WindowManager(Field11 field11)
     {
+        this.painter = new GameFieldPaintListener(display, field11);
+        
+        //TODO: use Seettings.fieldWidth instead magic number 20 
+        int width = 20 * GameFieldPaintListener.STEP;
+        int height = 20 * GameFieldPaintListener.STEP;
+        this.windowListner = new WindowShellListener(width, height);
+        
         initShell();
         initMenuBar();
     }
@@ -56,17 +73,16 @@ public class WindowManager
 
     private void initShell()
     {
-        window = new Shell(display);
+        window = new Shell(display, SWT.CLOSE | SWT.TITLE | SWT.MIN);
 
         window.setText("FastPoints");
-        window.setSize(1200, 800);
-        // window.setMaximized(true);
         
-        //TODO: move into Main
-        FieldModel model = new FieldModel(20, 20);
-        model.initRandomly();
+        window.addPaintListener(painter);
         
-        window.addPaintListener(new GameFieldPaintListener(display, model));
+        window.addShellListener(windowListner);   
+        
+        MouseListener mouseListener = new WindowMouseListener();
+        window.addMouseListener(mouseListener);
     }
 
     private void initMenuBar()
@@ -105,20 +121,30 @@ public class WindowManager
             aboutItem.setText("About...");
         }
 
-        newGameItem.addSelectionListener(new newGameItemListener());
-        exitItem.addSelectionListener(new gameExitItemListener());
+        newGameItem.addSelectionListener(new NewGameItemListener());
+        exitItem.addSelectionListener(new GameExitItemListener());
 
-        getHelpItem.addSelectionListener(new getHelpItemListener());
-        aboutItem.addSelectionListener(new aboutItemListener());
+        getHelpItem.addSelectionListener(new GetHelpItemListener());
+        aboutItem.addSelectionListener(new AboutItemListener());
 
         window.setMenuBar(menuBar);
     }
 
-    private class newGameItemListener implements SelectionListener
+    private class NewGameItemListener implements SelectionListener
     {
         public void widgetSelected(SelectionEvent event)
-        {
-            // TODO Auto-generated method stub
+        {            
+            //TODO: move into resize() method
+            int width = 50 * GameFieldPaintListener.STEP;
+            int height = 40 * GameFieldPaintListener.STEP;
+            painter.getField().resize(50, 40);
+            
+            int frameX = window.getSize().x - window.getClientArea().width;
+            int frameY = window.getSize().y - window.getClientArea().height;
+            window.setSize(width + frameX, height + frameY);
+                        
+            painter.getField().clear();           
+            window.redraw();
         }
 
         @Override
@@ -128,7 +154,7 @@ public class WindowManager
         }
     }
 
-    private class gameExitItemListener implements SelectionListener
+    private class GameExitItemListener implements SelectionListener
     {
         public void widgetSelected(SelectionEvent event)
         {
@@ -143,7 +169,7 @@ public class WindowManager
         }
     }
 
-    private class getHelpItemListener implements SelectionListener
+    private class GetHelpItemListener implements SelectionListener
     {
         public void widgetSelected(SelectionEvent event)
         {
@@ -160,7 +186,7 @@ public class WindowManager
         }
     }
 
-    private class aboutItemListener implements SelectionListener
+    private class AboutItemListener implements SelectionListener
     {
         public void widgetSelected(SelectionEvent event)
         {
@@ -177,6 +203,78 @@ public class WindowManager
         public void widgetDefaultSelected(SelectionEvent e)
         {
             // not supported
+        }
+    }
+   
+    private class WindowShellListener implements ShellListener
+    {
+        private int width;
+        
+        private int height;
+
+        public WindowShellListener(int width, int height)
+        {
+            this.width = width;   //TODO: use Seettings.fieldWidth  
+            this.height = height; //TODO: use Seettings.fieldHeight      
+        }
+
+        @Override
+        public void shellActivated(ShellEvent e)
+        {
+            int frameX = window.getSize().x - window.getClientArea().width;
+            int frameY = window.getSize().y - window.getClientArea().height;
+            
+            //TODO: use Seettings.fieldWidth  
+            //TODO: use Seettings.fieldHeight 
+            window.setSize(width + frameX, height + frameY);        
+        }
+
+        @Override
+        public void shellClosed(ShellEvent e)
+        {
+            System.out.println("Client Area: " + window.getClientArea());
+        }
+
+        @Override
+        public void shellDeactivated(ShellEvent e)
+        {
+            // not supported
+        }
+
+        @Override
+        public void shellDeiconified(ShellEvent e)
+        {
+            // not supported
+        }
+
+        @Override
+        public void shellIconified(ShellEvent e)
+        {
+            // not supported
+        }
+    }
+    
+    private class WindowMouseListener implements MouseListener 
+    {
+        @Override
+        public void mouseDoubleClick(MouseEvent e)
+        {
+             // not supported           
+        }
+
+        @Override
+        public void mouseDown(MouseEvent e)
+        {
+            int i = e.x/GameFieldPaintListener.STEP;
+            int j = e.y/GameFieldPaintListener.STEP;
+            painter.getField().changeIfNeed(i, j);
+            window.redraw();
+        }
+
+        @Override
+        public void mouseUp(MouseEvent e)
+        {
+             // not supported       
         }
     }
 }
