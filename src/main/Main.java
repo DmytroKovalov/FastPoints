@@ -1,6 +1,6 @@
 package main;
 
-import model.Field11;
+import model.Field;
 import gui.WindowManager;
 
 /**
@@ -20,9 +20,9 @@ public class Main
      */
     public static void main(String[] args)
     {
-        Field11 field11 = new Field11(20, 20);
+        Field field = new Field(20, 20);
                
-        WindowManager manager = new WindowManager(field11);
+        WindowManager manager = new WindowManager(field);
         manager.showMainWindow();
     }
      

@@ -1,6 +1,6 @@
 package gui;
 
-import model.Field11;
+import model.Field;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
@@ -40,11 +40,11 @@ public class WindowManager
 
     /**
      * default constructor
-     * @param field11 
+     * @param field 
      */
-    public WindowManager(Field11 field11)
+    public WindowManager(Field field)
     {
-        this.painter = new GameFieldPaintListener(display, field11);
+        this.painter = new GameFieldPaintListener(display, field);
         
         //TODO: use Seettings.fieldWidth instead magic number 20 
         int width = 20 * GameFieldPaintListener.STEP;

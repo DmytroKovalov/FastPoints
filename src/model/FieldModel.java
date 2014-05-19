@@ -1,10 +1,10 @@
 package model;
 
-public class FieldModel11
+public class FieldModel
 {
     private PointState[][] grid; 
 
-    public FieldModel11(int width, int height)
+    public FieldModel(int width, int height)
     {
         this.grid = new PointState[width][height];
     }

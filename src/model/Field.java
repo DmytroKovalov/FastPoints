@@ -1,6 +1,6 @@
 package model;
 
-public class Field11
+public class Field
 {
     private boolean isCurrentRed;
     
@@ -8,13 +8,13 @@ public class Field11
     
     private int height;
     
-    private FieldModel11 fieldModel11;
+    private FieldModel fieldModel;
         
-    public Field11(int width, int height)
+    public Field(int width, int height)
     {
         this.width = width;
         this.height = height;
-        this.fieldModel11 = new FieldModel11(width, height);
+        this.fieldModel = new FieldModel(width, height);
         clear();
     }
 
@@ -30,7 +30,7 @@ public class Field11
 
     public PointState getPointState(int i, int j)
     {
-        return fieldModel11.getPointState(i, j);
+        return fieldModel.getPointState(i, j);
     }
         
     public void clear()
@@ -39,17 +39,17 @@ public class Field11
         {
             for (int j = 0; j < height; j++)
             {
-                fieldModel11.setPointState(i, j, PointState.EMPTY);
+                fieldModel.setPointState(i, j, PointState.EMPTY);
             }
         }
     }
     
     public void changeIfNeed(int i, int j)
     {
-        PointState state = fieldModel11.getPointState(i, j);
+        PointState state = fieldModel.getPointState(i, j);
         if (state == PointState.EMPTY)
         {
-            fieldModel11.setPointState(i, j, isCurrentRed ? PointState.RED : PointState.BLUE);
+            fieldModel.setPointState(i, j, isCurrentRed ? PointState.RED : PointState.BLUE);
             isCurrentRed = !isCurrentRed;
         }
     }
@@ -58,7 +58,7 @@ public class Field11
     {
         this.width = width;
         this.height = height;
-        this.fieldModel11 = new FieldModel11(width, height);
+        this.fieldModel = new FieldModel(width, height);
         clear();
     }
 }
