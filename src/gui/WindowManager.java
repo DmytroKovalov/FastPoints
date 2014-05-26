@@ -15,6 +15,9 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 
+import config.ConfigManager;
+import config.Settings;
+
 /**
  * WindowManager is a manager for main window of application.
  * 
@@ -35,9 +38,6 @@ public class WindowManager
     
     private GameFieldPaintListener painter;
     
-    //TODO: remove this variable
-    private WindowShellListener windowListner;
-
     /**
      * default constructor
      * @param field 
@@ -45,11 +45,6 @@ public class WindowManager
     public WindowManager(Field field)
     {
         this.painter = new GameFieldPaintListener(display, field);
-        
-        //TODO: use Seettings.fieldWidth instead magic number 20 
-        int width = 20 * GameFieldPaintListener.STEP;
-        int height = 20 * GameFieldPaintListener.STEP;
-        this.windowListner = new WindowShellListener(width, height);
         
         initShell();
         initMenuBar();
@@ -79,7 +74,7 @@ public class WindowManager
         
         window.addPaintListener(painter);
         
-        window.addShellListener(windowListner);   
+        window.addShellListener(new WindowShellListener());   
         
         MouseListener mouseListener = new WindowMouseListener();
         window.addMouseListener(mouseListener);
@@ -134,16 +129,20 @@ public class WindowManager
     {
         public void widgetSelected(SelectionEvent event)
         {            
-            //TODO: move into resize() method
-            int width = 50 * GameFieldPaintListener.STEP;
-            int height = 40 * GameFieldPaintListener.STEP;
-            painter.getField().resize(50, 40);
-            
+            // TODO: move into resize() method
+            Settings settings = ConfigManager.getSettings();
+            settings.setFieldWidth(settings.getFieldWidth() + 5);
+            settings.setFieldHeight(settings.getFieldHeight() + 5);
+
+            painter.getField().resize(settings.getFieldWidth(), settings.getFieldHeight());
+
             int frameX = window.getSize().x - window.getClientArea().width;
             int frameY = window.getSize().y - window.getClientArea().height;
+            int width = settings.getFieldWidth() * GameFieldPaintListener.STEP;
+            int height = settings.getFieldHeight() * GameFieldPaintListener.STEP;
             window.setSize(width + frameX, height + frameY);
-                        
-            painter.getField().clear();           
+
+            painter.getField().clear();
             window.redraw();
         }
 
@@ -208,31 +207,23 @@ public class WindowManager
    
     private class WindowShellListener implements ShellListener
     {
-        private int width;
-        
-        private int height;
-
-        public WindowShellListener(int width, int height)
-        {
-            this.width = width;   //TODO: use Seettings.fieldWidth  
-            this.height = height; //TODO: use Seettings.fieldHeight      
-        }
-
         @Override
         public void shellActivated(ShellEvent e)
         {
             int frameX = window.getSize().x - window.getClientArea().width;
             int frameY = window.getSize().y - window.getClientArea().height;
             
-            //TODO: use Seettings.fieldWidth  
-            //TODO: use Seettings.fieldHeight 
+            Settings settings = ConfigManager.getSettings();
+            int width = settings.getFieldWidth() * GameFieldPaintListener.STEP;
+            int height = settings.getFieldHeight() * GameFieldPaintListener.STEP;
+            
             window.setSize(width + frameX, height + frameY);        
         }
 
         @Override
         public void shellClosed(ShellEvent e)
         {
-            System.out.println("Client Area: " + window.getClientArea());
+            // not supported
         }
 
         @Override

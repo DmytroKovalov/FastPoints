@@ -1,7 +1,10 @@
 package main;
 
+import config.ConfigManager;
+import config.Settings;
 import model.Field;
 import gui.WindowManager;
+
 
 /**
  * The main class of application. 
@@ -11,7 +14,6 @@ import gui.WindowManager;
  */
 public class Main
 {
-
     /**
      * The main method of application.
      * 
@@ -19,11 +21,13 @@ public class Main
      *            arguments from console
      */
     public static void main(String[] args)
-    {
-        Field field = new Field(20, 20);
+    {        
+        ConfigManager.loadSettings();
+        
+        Settings settings = ConfigManager.getSettings();
+        Field field = new Field(settings.getFieldWidth(), settings.getFieldHeight());
                
         WindowManager manager = new WindowManager(field);
         manager.showMainWindow();
-    }
-     
+    }     
 }

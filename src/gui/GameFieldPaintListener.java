@@ -13,16 +13,16 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Display;
 
 /**
- * This class is responsible for drawing of game field.
+ * This class responsible for drawing of game field.
  * 
  * @author DKovalov
  */
-public class GameFieldPaintListener implements PaintListener
+class GameFieldPaintListener implements PaintListener
 {
     private Display display;
-    
+
     private Field field;
-    
+
     public final static int STEP = 20;
 
     public final static int HALF_STEP = STEP / 2;
@@ -32,7 +32,7 @@ public class GameFieldPaintListener implements PaintListener
         this.display = display;
         this.field = field;
     }
-    
+
     public Field getField()
     {
         return field;
@@ -54,7 +54,7 @@ public class GameFieldPaintListener implements PaintListener
     private void drawGameField(GC gc, PaintEvent event)
     {
         drawGrid(gc, event.width, event.height);
-        drawPointsOnGrid(gc);            
+        drawPointsOnGrid(gc);
     }
 
     private void drawGrid(GC gc, int width, int height)
@@ -69,11 +69,11 @@ public class GameFieldPaintListener implements PaintListener
             gc.drawLine(0, y, width, y);
         }
     }
-    
+
     private void drawPointsOnGrid(GC gc)
     {
-        int width = STEP*field.getWidth();
-        int height= STEP*field.getHeight();
+        int width = STEP * field.getWidth();
+        int height = STEP * field.getHeight();
         Color color;
         for (int x = HALF_STEP; x < width; x += STEP)
         {
@@ -81,9 +81,9 @@ public class GameFieldPaintListener implements PaintListener
             {
                 int i = x / STEP;
                 int j = y / STEP;
-                PointState pointState =  field.getPointState(i, j);
-                
-                switch(pointState)
+                PointState pointState = field.getPointState(i, j);
+
+                switch (pointState)
                 {
                     case RED:
                         color = display.getSystemColor(SWT.COLOR_RED);
@@ -93,14 +93,14 @@ public class GameFieldPaintListener implements PaintListener
                         break;
                     case EMPTY:
                         continue;
-                    default:  
-                        throw new IllegalArgumentException("Expected type PointState");   
+                    default:
+                        throw new IllegalArgumentException("Expected type PointState");
                 }
-                
+
                 Point centre = new Point(x, y);
                 drawPoint(gc, centre, color);
-            }          
-        }       
+            }
+        }
     }
 
     private void drawPoint(GC gc, Point centre, Color color)
