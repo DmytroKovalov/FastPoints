@@ -22,12 +22,12 @@ public class Main
      */
     public static void main(String[] args)
     {        
-        ConfigManager.loadSettings();
+        ConfigManager.loadSettings();        
         
         Settings settings = ConfigManager.getSettings();
         Field field = new Field(settings.getFieldWidth(), settings.getFieldHeight());
                
         WindowManager manager = new WindowManager(field);
-        manager.showMainWindow();
+        manager.showWindow();
     }     
 }

@@ -9,6 +9,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.events.ShellListener;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
@@ -36,7 +37,7 @@ public class WindowManager
      */
     private Shell window;
     
-    private GameFieldPaintListener painter;
+    private final Field field;
     
     /**
      * default constructor
@@ -44,7 +45,7 @@ public class WindowManager
      */
     public WindowManager(Field field)
     {
-        this.painter = new GameFieldPaintListener(display, field);
+        this.field = field;
         
         initShell();
         initMenuBar();
@@ -53,7 +54,7 @@ public class WindowManager
     /**
      * show the main window
      */
-    public void showMainWindow()
+    public void showWindow()
     {
         window.open();
         while (!window.isDisposed())
@@ -69,15 +70,11 @@ public class WindowManager
     private void initShell()
     {
         window = new Shell(display, SWT.CLOSE | SWT.TITLE | SWT.MIN);
-
         window.setText("FastPoints");
         
-        window.addPaintListener(painter);
-        
-        window.addShellListener(new WindowShellListener());   
-        
-        MouseListener mouseListener = new WindowMouseListener();
-        window.addMouseListener(mouseListener);
+        window.addPaintListener(new GameFieldPaintListener(display, field));        
+        window.addShellListener(new WindowShellListener());           
+        window.addMouseListener(new WindowMouseListener());
     }
 
     private void initMenuBar()
@@ -92,13 +89,26 @@ public class WindowManager
 
         MenuItem newGameItem, exitItem;
         {
-            // New Game
+            // -New Game
             newGameItem = new MenuItem(gameMenu, SWT.PUSH);
             newGameItem.setText("New Game");
-            // Exit
+            // -Exit
             exitItem = new MenuItem(gameMenu, SWT.PUSH);
             exitItem.setText("Exit");
         }
+        
+        // Settings
+        MenuItem gameSettingsHeader = new MenuItem(menuBar, SWT.CASCADE);
+        gameSettingsHeader.setText("Settings");
+        Menu settingsMenu = new Menu(window, SWT.DROP_DOWN);
+        gameSettingsHeader.setMenu(settingsMenu);
+
+        MenuItem propertiesItem;
+        {
+            // -Properties
+            propertiesItem = new MenuItem(settingsMenu, SWT.PUSH);
+            propertiesItem.setText("Properties");
+        }       
 
         // Help
         MenuItem helpMenuHeader = new MenuItem(menuBar, SWT.CASCADE);
@@ -108,16 +118,18 @@ public class WindowManager
 
         MenuItem getHelpItem, aboutItem;
         {
-            // Get help
+            // -Get help
             getHelpItem = new MenuItem(helpMenu, SWT.PUSH);
             getHelpItem.setText("Get help");
-            // About...
+            // -About...
             aboutItem = new MenuItem(helpMenu, SWT.PUSH);
             aboutItem.setText("About...");
         }
 
         newGameItem.addSelectionListener(new NewGameItemListener());
         exitItem.addSelectionListener(new GameExitItemListener());
+        
+        propertiesItem.addSelectionListener(new PropertiesItemListener());
 
         getHelpItem.addSelectionListener(new GetHelpItemListener());
         aboutItem.addSelectionListener(new AboutItemListener());
@@ -129,20 +141,7 @@ public class WindowManager
     {
         public void widgetSelected(SelectionEvent event)
         {            
-            // TODO: move into resize() method
-            Settings settings = ConfigManager.getSettings();
-            settings.setFieldWidth(settings.getFieldWidth() + 5);
-            settings.setFieldHeight(settings.getFieldHeight() + 5);
-
-            painter.getField().resize(settings.getFieldWidth(), settings.getFieldHeight());
-
-            int frameX = window.getSize().x - window.getClientArea().width;
-            int frameY = window.getSize().y - window.getClientArea().height;
-            int width = settings.getFieldWidth() * GameFieldPaintListener.STEP;
-            int height = settings.getFieldHeight() * GameFieldPaintListener.STEP;
-            window.setSize(width + frameX, height + frameY);
-
-            painter.getField().clear();
+            field.clear();
             window.redraw();
         }
 
@@ -184,7 +183,36 @@ public class WindowManager
             // not supported
         }
     }
+    
+    private class PropertiesItemListener implements SelectionListener
+    {
+        public void widgetSelected(SelectionEvent event)
+        {
+            SettingsWindow settingsWindow = new SettingsWindow(display);
+            if (settingsWindow.showWindow(getShiftedLocation()))
+            {
+                Settings settings = ConfigManager.getSettings();
+                field.resize(settings.getFieldWidth(), settings.getFieldHeight());
+                window.redraw();
+            }
+        }
 
+        private Point getShiftedLocation()
+        {
+            Point location = window.getLocation();
+            final int shift = 30;
+            location.x += shift;
+            location.y += shift;
+            return location;
+        }
+
+        @Override
+        public void widgetDefaultSelected(SelectionEvent e)
+        {
+            // not supported
+        }
+    }
+    
     private class AboutItemListener implements SelectionListener
     {
         public void widgetSelected(SelectionEvent event)
@@ -192,9 +220,9 @@ public class WindowManager
             MessageBox dialog = new MessageBox(window, SWT.ICON_INFORMATION | SWT.OK);
             dialog.setText("About...");
             dialog.setMessage("Game FastPoints " 
-                    + "\n @author Dmytro Kovalov " 
-                    + "\n @mail dmytro.kovalov.64@gmail.com "
-                    + "\n @year 2014");
+                    + "\n @author: Dmytro Kovalov " 
+                    + "\n @mail: dmytro.kovalov.64@gmail.com "
+                    + "\n @year: 2014");
             dialog.open();
         }
 
@@ -258,7 +286,7 @@ public class WindowManager
         {
             int i = e.x/GameFieldPaintListener.STEP;
             int j = e.y/GameFieldPaintListener.STEP;
-            painter.getField().changeIfNeed(i, j);
+            field.changeIfNeed(i, j);
             window.redraw();
         }
 

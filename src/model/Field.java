@@ -42,6 +42,7 @@ public class Field
                 fieldModel.setPointState(i, j, PointState.EMPTY);
             }
         }
+        isCurrentRed = false;
     }
     
     public void changeIfNeed(int i, int j)

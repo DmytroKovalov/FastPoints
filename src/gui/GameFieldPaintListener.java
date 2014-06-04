@@ -41,6 +41,7 @@ class GameFieldPaintListener implements PaintListener
     @Override
     public void paintControl(PaintEvent event)
     {
+        //double buffering
         Image bufferImage = new Image(display, event.width, event.height);
         GC bufferGC = new GC(bufferImage);
 
