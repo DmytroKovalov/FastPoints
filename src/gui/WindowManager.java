@@ -10,6 +10,9 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.events.ShellListener;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
@@ -39,8 +42,11 @@ public class WindowManager
     
     private final Field field;
     
+    private StatusLine statusLine;
+    
     /**
-     * default constructor
+     * Constructor
+     * 
      * @param field 
      */
     public WindowManager(Field field)
@@ -49,13 +55,15 @@ public class WindowManager
         
         initShell();
         initMenuBar();
+        initStatusLine();
     }
 
     /**
      * show the main window
      */
     public void showWindow()
-    {
+    {   
+        resizeWindow();
         window.open();
         while (!window.isDisposed())
         {
@@ -71,6 +79,7 @@ public class WindowManager
     {
         window = new Shell(display, SWT.CLOSE | SWT.TITLE | SWT.MIN);
         window.setText("FastPoints");
+        window.setLayout(new FormLayout());
         
         window.addPaintListener(new GameFieldPaintListener(display, field));        
         window.addShellListener(new WindowShellListener());           
@@ -137,6 +146,21 @@ public class WindowManager
         window.setMenuBar(menuBar);
     }
 
+    private void initStatusLine()
+    { 
+        statusLine = new StatusLine(window, display, SWT.BORDER | SWT.RIGHT);
+        statusLine.setScore(0, 0);
+        //statusLine.setWinnerRed();
+        //statusLine.setWinnerBlue();
+        //statusLine.setDraw();
+        FormData labelData = new FormData();
+        labelData.left = new FormAttachment(0);
+        labelData.right = new FormAttachment(100);
+        labelData.bottom = new FormAttachment(100);
+        statusLine.setLayoutData(labelData);
+        statusLine.update();
+    }
+    
     private class NewGameItemListener implements SelectionListener
     {
         public void widgetSelected(SelectionEvent event)
@@ -233,19 +257,24 @@ public class WindowManager
         }
     }
    
+    private void resizeWindow()
+    {
+        int frameX = window.getSize().x - window.getClientArea().width;
+        int frameY = window.getSize().y - window.getClientArea().height;
+
+        Settings settings = ConfigManager.getSettings();
+        int width = settings.getFieldWidth() * GameFieldPaintListener.STEP;
+        int height = settings.getFieldHeight() * GameFieldPaintListener.STEP;
+
+        window.setSize(width + frameX, height + frameY + statusLine.getSize().y);  
+    }
+    
     private class WindowShellListener implements ShellListener
     {
         @Override
         public void shellActivated(ShellEvent e)
         {
-            int frameX = window.getSize().x - window.getClientArea().width;
-            int frameY = window.getSize().y - window.getClientArea().height;
-            
-            Settings settings = ConfigManager.getSettings();
-            int width = settings.getFieldWidth() * GameFieldPaintListener.STEP;
-            int height = settings.getFieldHeight() * GameFieldPaintListener.STEP;
-            
-            window.setSize(width + frameX, height + frameY);        
+            resizeWindow();
         }
 
         @Override
@@ -283,11 +312,14 @@ public class WindowManager
 
         @Override
         public void mouseDown(MouseEvent e)
-        {
+        {          
             int i = e.x/GameFieldPaintListener.STEP;
             int j = e.y/GameFieldPaintListener.STEP;
-            field.changeIfNeed(i, j);
-            window.redraw();
+            if ((i < field.getWidth()) && (j < field.getHeight()))
+            {
+                field.changeIfNeed(i, j);
+                window.redraw();
+            }         
         }
 
         @Override

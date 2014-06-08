@@ -76,6 +76,7 @@ class GameFieldPaintListener implements PaintListener
         int width = STEP * field.getWidth();
         int height = STEP * field.getHeight();
         Color color;
+        //TODO: walk on i,j and calculate x,y only if they need 
         for (int x = HALF_STEP; x < width; x += STEP)
         {
             for (int y = HALF_STEP; y < height; y += STEP)
