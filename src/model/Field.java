@@ -1,5 +1,7 @@
 package model;
 
+import org.eclipse.swt.graphics.Point;
+
 public class Field
 {
     private boolean isCurrentRed;
@@ -45,14 +47,17 @@ public class Field
         isCurrentRed = false;
     }
     
-    public void changeIfNeed(int i, int j)
+    public boolean putPointIfWeCan(int i, int j)
     {
+        boolean isChanged = false;
         PointState state = fieldModel.getPointState(i, j);
         if (state == PointState.EMPTY)
         {
             fieldModel.setPointState(i, j, isCurrentRed ? PointState.RED : PointState.BLUE);
             isCurrentRed = !isCurrentRed;
+            isChanged = true;
         }
+        return isChanged;
     }
 
     public void resize(int width, int height)
@@ -61,5 +66,10 @@ public class Field
         this.height = height;
         this.fieldModel = new FieldModel(width, height);
         clear();
+    }
+
+    public void putPoint(Point point)
+    {
+        putPointIfWeCan(point.x, point.y);    
     }
 }

@@ -1,10 +1,9 @@
 package gui;
 
+import gui.listeners.WindowMouseListener;
 import model.Field;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.events.ShellEvent;
@@ -82,8 +81,8 @@ public class WindowManager
         window.setLayout(new FormLayout());
         
         window.addPaintListener(new GameFieldPaintListener(display, field));        
-        window.addShellListener(new WindowShellListener());           
-        window.addMouseListener(new WindowMouseListener());
+        window.addShellListener(new WindowShellListener());
+        window.addMouseListener(new WindowMouseListener(window, field, GameFieldPaintListener.STEP));
     }
 
     private void initMenuBar()
@@ -300,32 +299,5 @@ public class WindowManager
         {
             // not supported
         }
-    }
-    
-    private class WindowMouseListener implements MouseListener 
-    {
-        @Override
-        public void mouseDoubleClick(MouseEvent e)
-        {
-             // not supported           
-        }
-
-        @Override
-        public void mouseDown(MouseEvent e)
-        {          
-            int i = e.x/GameFieldPaintListener.STEP;
-            int j = e.y/GameFieldPaintListener.STEP;
-            if ((i < field.getWidth()) && (j < field.getHeight()))
-            {
-                field.changeIfNeed(i, j);
-                window.redraw();
-            }         
-        }
-
-        @Override
-        public void mouseUp(MouseEvent e)
-        {
-             // not supported       
-        }
-    }
+    }    
 }

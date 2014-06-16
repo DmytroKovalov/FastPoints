@@ -1,5 +1,7 @@
 package config;
 
+import game.GameMode;
+
 /**
  * This class represent all settings of application.
  * 
@@ -11,6 +13,8 @@ public class Settings
     
     private int fieldHeight;
     
+    private GameMode gameMode;
+    
     protected Settings()
     {
         setDefaultValues();
@@ -19,7 +23,8 @@ public class Settings
     private void setDefaultValues()
     {
         fieldWidth = 15;
-        fieldHeight = 10;    
+        fieldHeight = 10;
+        gameMode = GameMode.HUMAN_VS_HUMAN;
     }
     
     public int getFieldWidth()
@@ -41,4 +46,14 @@ public class Settings
     {
         this.fieldHeight = fieldHeight;
     }
+
+    public GameMode getGameMode()
+    {
+        return gameMode;
+    }
+
+    public void setGameMode(GameMode gameMode)
+    {
+        this.gameMode = gameMode;
+    }    
 }

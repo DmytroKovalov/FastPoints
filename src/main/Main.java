@@ -29,5 +29,7 @@ public class Main
                
         WindowManager manager = new WindowManager(field);
         manager.showWindow();
+        
+        ConfigManager.saveSettings();
     }     
 }

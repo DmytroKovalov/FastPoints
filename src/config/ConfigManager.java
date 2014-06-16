@@ -1,5 +1,7 @@
 package config;
 
+import game.GameMode;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -20,6 +22,7 @@ public class ConfigManager
             ini = new Wini(new File(CONFIG_FILE_NAME));
             INSTANCE.setFieldWidth(ini.get("field", "width", int.class));
             INSTANCE.setFieldHeight(ini.get("field", "height", int.class));
+            INSTANCE.setGameMode(ini.get("game", "mod", GameMode.class));
         }
         catch (InvalidFileFormatException exp)
         {
@@ -41,6 +44,9 @@ public class ConfigManager
             ini = new Wini(new File(CONFIG_FILE_NAME));
             ini.put("field", "width", INSTANCE.getFieldWidth());
             ini.put("field", "height", INSTANCE.getFieldHeight());
+            ini.put("game", "mod", INSTANCE.getGameMode());
+            ini.putComment("game", "mods:" + GameMode.HUMAN_VS_HUMAN + ", " + GameMode.HUMAN_VS_AI + ", "
+                    + GameMode.AI_VS_AI);
             ini.store();
         }
         catch (InvalidFileFormatException exp)
