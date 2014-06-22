@@ -1,8 +1,13 @@
 package model;
 
+import java.util.LinkedList;
+import java.util.List;
+
 public class FieldModel
 {
-    private PointState[][] grid; 
+    private PointState[][] grid;
+    
+    private List<Surround> surrounds = new LinkedList<Surround>();
 
     public FieldModel(int width, int height)
     {
@@ -17,5 +22,15 @@ public class FieldModel
     public void setPointState(int i, int j, PointState pointState)
     {
         grid[i][j] = pointState;
-    } 
+    }
+    
+    public void addSurround(Surround surround)
+    {
+        surrounds.add(surround);       
+    }    
+    
+    public List<Surround> getAllSurrounds()
+    {
+        return surrounds;
+    }
 }

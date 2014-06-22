@@ -1,7 +1,10 @@
 package gui;
 
+import java.util.List;
+
 import model.Field;
 import model.PointState;
+import model.Surround;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.PaintEvent;
@@ -23,6 +26,16 @@ class GameFieldPaintListener implements PaintListener
 
     private Field field;
 
+    private GC gc;
+    
+    private final Color red;
+    
+    private final Color blue;
+    
+    private final int POINT_RADIUS = 5;
+    
+    private final int POINT_DIAMETER = 2 * POINT_RADIUS;
+    
     public final static int STEP = 20;
 
     public final static int HALF_STEP = STEP / 2;
@@ -31,6 +44,9 @@ class GameFieldPaintListener implements PaintListener
     {
         this.display = display;
         this.field = field;
+        this.red = display.getSystemColor(SWT.COLOR_RED);
+        this.blue = display.getSystemColor(SWT.COLOR_BLUE);
+        
     }
 
     public Field getField()
@@ -41,24 +57,25 @@ class GameFieldPaintListener implements PaintListener
     @Override
     public void paintControl(PaintEvent event)
     {
-        //double buffering
+        // double buffering
         Image bufferImage = new Image(display, event.width, event.height);
-        GC bufferGC = new GC(bufferImage);
+        gc = new GC(bufferImage);
 
-        drawGameField(bufferGC, event);
+        drawGameField(event);
         event.gc.drawImage(bufferImage, 0, 0);
 
         bufferImage.dispose();
         event.gc.dispose();
     }
 
-    private void drawGameField(GC gc, PaintEvent event)
+    private void drawGameField(PaintEvent event)
     {
-        drawGrid(gc, event.width, event.height);
-        drawPointsOnGrid(gc);
+        drawGrid(event.width, event.height);
+        drawPointsOnGrid();
+        drawSurrounds();
     }
 
-    private void drawGrid(GC gc, int width, int height)
+    private void drawGrid(int width, int height)
     {
         for (int x = HALF_STEP; x < width; x += STEP)
         {
@@ -71,12 +88,12 @@ class GameFieldPaintListener implements PaintListener
         }
     }
 
-    private void drawPointsOnGrid(GC gc)
+    private void drawPointsOnGrid()
     {
         int width = STEP * field.getWidth();
         int height = STEP * field.getHeight();
         Color color;
-        //TODO: walk on i,j and calculate x,y only if they need 
+        // TODO: walk on i,j and calculate x,y only if they need
         for (int x = HALF_STEP; x < width; x += STEP)
         {
             for (int y = HALF_STEP; y < height; y += STEP)
@@ -88,10 +105,10 @@ class GameFieldPaintListener implements PaintListener
                 switch (pointState)
                 {
                     case RED:
-                        color = display.getSystemColor(SWT.COLOR_RED);
+                        color = red;
                         break;
                     case BLUE:
-                        color = display.getSystemColor(SWT.COLOR_BLUE);
+                        color = blue;
                         break;
                     case EMPTY:
                         continue;
@@ -100,17 +117,39 @@ class GameFieldPaintListener implements PaintListener
                 }
 
                 Point centre = new Point(x, y);
-                drawPoint(gc, centre, color);
+                drawPoint(centre, color);
             }
         }
     }
 
-    private void drawPoint(GC gc, Point centre, Color color)
+    private void drawPoint(Point centre, Color color)
     {
-        final int radius = 5;
-        final int diameter = 2 * radius;
-
         gc.setBackground(color);
-        gc.fillOval(centre.x - radius, centre.y - radius, diameter, diameter);
+        gc.fillOval(centre.x - POINT_RADIUS, centre.y - POINT_RADIUS, POINT_DIAMETER, POINT_DIAMETER);
+    }
+
+    private void drawSurrounds()
+    {
+        gc.setLineWidth(2);
+        for (Surround surround : field.getAllSurrounds())
+        {
+            Color color = surround.isRed() ? red : blue;
+            gc.setForeground(color);
+            int[] points = getPointsLikeArray(surround.getPoints());
+            gc.drawPolygon(points);
+        }
+    }
+
+    private int[] getPointsLikeArray(List<Point> points)
+    {
+        int[] result = new int[points.size() * 2];
+        int index = 0;
+        for (Point point : points)
+        {
+            result[index] = HALF_STEP + STEP * point.x;
+            result[index + 1] = HALF_STEP + STEP * point.y;
+            index += 2;
+        }
+        return result;
     }
 }

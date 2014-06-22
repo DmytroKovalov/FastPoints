@@ -1,9 +1,11 @@
 package main;
 
+import game.AIPlayer;
+import gui.WindowManager;
+import model.Field;
+import model.Surround;
 import config.ConfigManager;
 import config.Settings;
-import model.Field;
-import gui.WindowManager;
 
 
 /**
@@ -26,7 +28,9 @@ public class Main
         
         Settings settings = ConfigManager.getSettings();
         Field field = new Field(settings.getFieldWidth(), settings.getFieldHeight());
-               
+        
+        Surround.setGameField(field);
+        AIPlayer.setGameField(field);     
         WindowManager manager = new WindowManager(field);
         manager.showWindow();
         

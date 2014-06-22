@@ -1,7 +1,18 @@
 package model;
 
+import java.util.List;
+
 import org.eclipse.swt.graphics.Point;
 
+import util.SurroundsFinder;
+
+/**
+ * 
+ *  //TODO: rename this class to GameField 
+ *  
+ * @author DKovalov
+ *
+ */
 public class Field
 {
     private boolean isCurrentRed;
@@ -11,12 +22,15 @@ public class Field
     private int height;
     
     private FieldModel fieldModel;
+    
+    private final SurroundsFinder finder;
         
     public Field(int width, int height)
     {
         this.width = width;
         this.height = height;
         this.fieldModel = new FieldModel(width, height);
+        this.finder = new SurroundsFinder(this);
         clear();
     }
 
@@ -56,6 +70,9 @@ public class Field
             fieldModel.setPointState(i, j, isCurrentRed ? PointState.RED : PointState.BLUE);
             isCurrentRed = !isCurrentRed;
             isChanged = true;
+            
+            List<Surround> surrounds = finder.findNewSurrounds(i, j);
+            addSurrounds(surrounds);
         }
         return isChanged;
     }
@@ -71,5 +88,30 @@ public class Field
     public void putPoint(Point point)
     {
         putPointIfWeCan(point.x, point.y);    
+    }
+    
+    public List<Surround> getAllSurrounds()
+    {
+        return fieldModel.getAllSurrounds();
+    }
+    
+    private void addSurrounds(List<Surround> surrounds)
+    {
+        for (Surround surround : surrounds)
+        {
+            addSurround(surround);
+        }
+    }
+    
+    private void addSurround(Surround surround)
+    {
+        if (surround.isCorrect())
+        {
+            fieldModel.addSurround(surround);
+        }
+        else
+        {
+            throw new IllegalArgumentException("Incorrect surround  " + surround);
+        }
     }
 }

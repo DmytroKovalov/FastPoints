@@ -11,9 +11,11 @@ import org.eclipse.swt.graphics.Point;
 
 public class AIPlayer
 {
-    public static Point nextRandomStep(Field field)
+    private static Field field;
+    
+    public static Point nextRandomStep()
     {
-        List<Point> emptyPoints = getAllEmptyPoints(field);
+        List<Point> emptyPoints = getAllEmptyPoints();
         
         Random rand = new Random(System.currentTimeMillis());
         int index =  rand.nextInt(emptyPoints.size());
@@ -21,7 +23,7 @@ public class AIPlayer
         return emptyPoints.get(index);
     }
 
-    private static List<Point> getAllEmptyPoints(Field field)
+    private static List<Point> getAllEmptyPoints()
     {
         List<Point> result = new ArrayList<Point>();
         for (int i = 0; i < field.getWidth(); i++)
@@ -35,5 +37,10 @@ public class AIPlayer
             }
         }
         return result; 
+    }
+
+    public static void setGameField(Field field)
+    {
+        AIPlayer.field = field;
     }
 }
