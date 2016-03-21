@@ -9,10 +9,15 @@ import org.ini4j.InvalidFileFormatException;
 import org.ini4j.Wini;
 
 public class ConfigManager
-{
+{    
     private final static Settings INSTANCE = new Settings();
     
     private final static String CONFIG_FILE_NAME = "config.ini";
+    
+    private ConfigManager()
+    {
+        
+    }
     
     public static void loadSettings()
     {

@@ -1,13 +1,13 @@
 package model;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Collection;
+import java.util.HashSet;
 
 public class FieldModel
 {
     private PointState[][] grid;
     
-    private List<Surround> surrounds = new LinkedList<Surround>();
+    private Collection<Surround> surrounds = new HashSet<Surround>();
 
     public FieldModel(int width, int height)
     {
@@ -29,7 +29,7 @@ public class FieldModel
         surrounds.add(surround);       
     }    
     
-    public List<Surround> getAllSurrounds()
+    public Collection<Surround> getAllSurrounds()
     {
         return surrounds;
     }

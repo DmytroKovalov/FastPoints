@@ -1,5 +1,6 @@
 package main;
 
+import util.Helper;
 import game.AIPlayer;
 import gui.WindowManager;
 import model.Field;
@@ -23,14 +24,15 @@ public class Main
      *            arguments from console
      */
     public static void main(String[] args)
-    {        
-        ConfigManager.loadSettings();        
-        
+    {
+        ConfigManager.loadSettings();
+
         Settings settings = ConfigManager.getSettings();
         Field field = new Field(settings.getFieldWidth(), settings.getFieldHeight());
         
         Surround.setGameField(field);
         AIPlayer.setGameField(field);     
+        Helper.setGameField(field);
         WindowManager manager = new WindowManager(field);
         manager.showWindow();
         

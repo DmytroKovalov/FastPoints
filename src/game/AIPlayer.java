@@ -13,8 +13,14 @@ public class AIPlayer
 {
     private static Field field;
     
-    public static Point nextRandomStep()
+    public static Point nextStep()
     {
+        return nextRandomStep();
+    }
+    
+    private static Point nextRandomStep()
+    {
+        //TODO: don't call this function at every step. Hold AllEmptyPoints for one unique game.
         List<Point> emptyPoints = getAllEmptyPoints();
         
         Random rand = new Random(System.currentTimeMillis());

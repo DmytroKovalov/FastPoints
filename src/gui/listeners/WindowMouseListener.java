@@ -67,7 +67,7 @@ public class WindowMouseListener implements MouseListener
             if (field.putPointIfWeCan(i, j))
             {
                 window.redraw();
-                Point point = AIPlayer.nextRandomStep();
+                Point point = AIPlayer.nextStep();
                 field.putPoint(point);
                 window.redraw();
             }

@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.Display;
  * 
  * @author DKovalov
  */
+//TODO: move to package gui.listeners
 class GameFieldPaintListener implements PaintListener
 {
     private Display display;
@@ -140,6 +141,7 @@ class GameFieldPaintListener implements PaintListener
         }
     }
 
+    //TODO:rename or add comment
     private int[] getPointsLikeArray(List<Point> points)
     {
         int[] result = new int[points.size() * 2];

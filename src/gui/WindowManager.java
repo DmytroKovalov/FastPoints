@@ -243,9 +243,9 @@ public class WindowManager
             MessageBox dialog = new MessageBox(window, SWT.ICON_INFORMATION | SWT.OK);
             dialog.setText("About...");
             dialog.setMessage("Game FastPoints " 
-                    + "\n @author: Dmytro Kovalov " 
-                    + "\n @mail: dmytro.kovalov.64@gmail.com "
-                    + "\n @year: 2014");
+                    + "\n author: Dmytro Kovalov " 
+                    + "\n mail: dmytro.kovalov.64@gmail.com "
+                    + "\n year: 2014");
             dialog.open();
         }
 

@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.eclipse.swt.graphics.Point;
 
+import util.Helper;
+
 /**
  * This class represent surrounding of points.
  * 
@@ -19,11 +21,12 @@ public class Surround
 
     private static Field field;
 
-    public Surround(boolean isRed)
-    {      
-        this.isRed = isRed;
+    public Surround(PointState pointState)
+    {
+        assert (pointState != PointState.EMPTY);
+        this.isRed = pointState == PointState.RED ? true : false;
     }
-
+    
     public void addPoint(Point point)
     {
         if (isCorrect(point))
@@ -55,28 +58,20 @@ public class Surround
         result &= points.size() >= 4;
         if (result)
         {
-            int lenght = points.size() - 1;
-            result &= areNeighbours(points.get(0), points.get(lenght));
-            for (int i = 0; (i < lenght) && result; i++)
+            int len = points.size() - 1;
+            result &= Helper.areNeighbours(points.get(0), points.get(len));
+            for (int i = 0; (i < len) && result; i++)
             {
-                result &= areNeighbours(points.get(i), points.get(i + 1));
+                result &= Helper.areNeighbours(points.get(i), points.get(i + 1));
             }
         }
         return result;
     }
 
-    private boolean areNeighbours(Point first, Point second)
-    {
-        int diffX = Math.abs(first.x - second.x);
-        int diffY = Math.abs(first.y - second.y);
-
-        return (diffX <= 1) && (diffY <= 1);
-    }
-
     @Override
     public String toString()
     {
-        return "Surround {points=" + points + ", isRed=" + isRed + "}";
+        return "Surround {isRed=" + isRed + ", points=" + points + "}";
     }
     
     public boolean isRed()

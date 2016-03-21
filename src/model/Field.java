@@ -1,5 +1,6 @@
 package model;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.swt.graphics.Point;
@@ -48,6 +49,11 @@ public class Field
     {
         return fieldModel.getPointState(i, j);
     }
+    
+    public PointState getPointState(Point point)
+    {
+        return fieldModel.getPointState(point.x, point.y);
+    }
         
     public void clear()
     {        
@@ -59,6 +65,7 @@ public class Field
             }
         }
         isCurrentRed = false;
+        fieldModel.getAllSurrounds().clear();
     }
     
     public boolean putPointIfWeCan(int i, int j)
@@ -72,7 +79,11 @@ public class Field
             isChanged = true;
             
             List<Surround> surrounds = finder.findNewSurrounds(i, j);
-            addSurrounds(surrounds);
+            if (!surrounds.isEmpty())
+            {
+                addSurrounds(surrounds);
+            }    
+            
         }
         return isChanged;
     }
@@ -90,7 +101,7 @@ public class Field
         putPointIfWeCan(point.x, point.y);    
     }
     
-    public List<Surround> getAllSurrounds()
+    public Collection<Surround> getAllSurrounds()
     {
         return fieldModel.getAllSurrounds();
     }
@@ -114,4 +125,6 @@ public class Field
             throw new IllegalArgumentException("Incorrect surround  " + surround);
         }
     }
+
+
 }
