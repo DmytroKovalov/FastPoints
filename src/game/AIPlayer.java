@@ -23,6 +23,7 @@ public class AIPlayer
         //TODO: don't call this function at every step. Hold AllEmptyPoints for one unique game.
         List<Point> emptyPoints = getAllEmptyPoints();
         
+        //TODO: don't initial randomizer at every call 
         Random rand = new Random(System.currentTimeMillis());
         int index =  rand.nextInt(emptyPoints.size());
         //TODO: add validation - list is not empty  

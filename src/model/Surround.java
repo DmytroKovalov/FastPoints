@@ -54,15 +54,14 @@ public class Surround
 
     public boolean isCorrect()
     {
-        boolean result = true;
-        result &= points.size() >= 4;
+        boolean result = points.size() >= 4;
         if (result)
         {
             int len = points.size() - 1;
-            result &= Helper.areNeighbours(points.get(0), points.get(len));
-            for (int i = 0; (i < len) && result; i++)
+            result = Helper.areNeighbours(points.get(0), points.get(len));
+            for (int i = 0; result && (i < len); i++)
             {
-                result &= Helper.areNeighbours(points.get(i), points.get(i + 1));
+                result = Helper.areNeighbours(points.get(i), points.get(i + 1));
             }
         }
         return result;

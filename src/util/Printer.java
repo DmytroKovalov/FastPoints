@@ -4,6 +4,8 @@ import java.util.Collection;
 
 import org.eclipse.swt.graphics.Point;
 
+//TODO: refactoring - all methods should return String and don't use "System.out.print" at all
+//      after refactoring rename class to Convertor 
 public class Printer
 {
     public static void print(Collection<Point> collection)

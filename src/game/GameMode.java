@@ -6,6 +6,7 @@ public enum GameMode
     HUMAN_VS_AI,
     AI_VS_AI;
     
+    //TODO: rename this method [getStringRepresentations,getValuesLikeStrings, ...] 
     public static String[] getValues()
     {
         String[] result = new String[3];

@@ -36,9 +36,11 @@ public class WindowMouseListener implements MouseListener
 
     @Override
     public void mouseDown(MouseEvent e)
-    {          
+    {   
+        
         int i = e.x / step;
-        int j = e.y / step;  
+        int j = e.y / step;
+        //TODO: create class game.Game and move this implementation to method game.Game.nextStep()[or doStep()]
         GameMode mod = ConfigManager.getSettings().getGameMode();       
         switch (mod)
         {         
@@ -60,6 +62,7 @@ public class WindowMouseListener implements MouseListener
         }
     }
 
+    //TODO: create class game.Game and move this method to it
     private void humanAndAIStep(int i, int j)
     {
         if ((i < field.getWidth()) && (j < field.getHeight()))
@@ -74,6 +77,7 @@ public class WindowMouseListener implements MouseListener
         }        
     }
 
+    //TODO: create class game.Game and move this method to it
     private void humanStep(int i, int j)
     {
         if ((i < field.getWidth()) && (j < field.getHeight()))

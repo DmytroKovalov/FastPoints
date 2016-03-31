@@ -101,6 +101,7 @@ class GameFieldPaintListener implements PaintListener
             {
                 int i = x / STEP;
                 int j = y / STEP;
+                //TODO: add methods getBluePoints and getRedPoints into Field class 
                 PointState pointState = field.getPointState(i, j);
 
                 switch (pointState)

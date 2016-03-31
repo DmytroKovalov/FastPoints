@@ -35,6 +35,7 @@ public class SurroundsFinder
         List<Surround> result = new ArrayList<Surround>();
         surroundType = field.getPointState(x, y);
 
+        //TODO: check for another surrounders
         List<Point> neighbours = Helper.getAllEnemyOrEmptyNeighbours(x, y);
         List<Point> canSkip = new ArrayList<Point>();        
         for (Point neighbour : neighbours)
@@ -208,12 +209,14 @@ public class SurroundsFinder
         //TODO: check for non empty surrounding
         Queue<Point> pointsForVisit = new LinkedList<Point>();
         pointsForVisit.add(startPoint);
+        
         boolean isClosed = !isOnBorder(startPoint);
         while (isClosed && !pointsForVisit.isEmpty())
         {
             Point currentPoint = pointsForVisit.remove();
             fillPoints.add(currentPoint);
 
+            //TODO: check for another surrounders
             List<Point> neighbours = getAllNotVisitedNeighbors(currentPoint);
             pointsForVisit.addAll(neighbours);
 

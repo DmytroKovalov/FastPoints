@@ -9,7 +9,7 @@ import util.SurroundsFinder;
 
 /**
  * 
- *  //TODO: rename this class to GameField 
+ *  //TODO: rename this class to GameField or Board
  *  
  * @author DKovalov
  *
@@ -24,6 +24,7 @@ public class Field
     
     private FieldModel fieldModel;
     
+    //TODO: create class game.Game and move this field into it
     private final SurroundsFinder finder;
         
     public Field(int width, int height)
@@ -68,6 +69,7 @@ public class Field
         fieldModel.getAllSurrounds().clear();
     }
     
+    //TODO: create class game.Game and move this method into it
     public boolean putPointIfWeCan(int i, int j)
     {
         boolean isChanged = false;
@@ -125,6 +127,4 @@ public class Field
             throw new IllegalArgumentException("Incorrect surround  " + surround);
         }
     }
-
-
 }
