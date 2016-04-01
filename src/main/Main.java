@@ -1,12 +1,12 @@
 package main;
 
-import util.Helper;
-import game.AIPlayer;
-import gui.WindowManager;
-import model.Field;
-import model.Surround;
 import config.ConfigManager;
 import config.Settings;
+import game.Game;
+import game.ai.AIPlayer;
+import model.GameField;
+import model.Surround;
+import util.Helper;
 
 
 /**
@@ -28,13 +28,14 @@ public class Main
         ConfigManager.loadSettings();
 
         Settings settings = ConfigManager.getSettings();
-        Field field = new Field(settings.getFieldWidth(), settings.getFieldHeight());
+        GameField field = new GameField(settings.getFieldWidth(), settings.getFieldHeight());
         
         Surround.setGameField(field);
         AIPlayer.setGameField(field);     
         Helper.setGameField(field);
-        WindowManager manager = new WindowManager(field);
-        manager.showWindow();
+        
+        Game game = new Game(field);
+        game.start();        
         
         ConfigManager.saveSettings();
     }     

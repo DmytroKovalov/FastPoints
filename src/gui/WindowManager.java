@@ -1,8 +1,5 @@
 package gui;
 
-import gui.listeners.WindowMouseListener;
-import model.Field;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -20,6 +17,10 @@ import org.eclipse.swt.widgets.Shell;
 
 import config.ConfigManager;
 import config.Settings;
+import game.Game;
+import gui.listeners.WindowMouseListener;
+import gui.listeners.GameFieldPaintListener;
+import model.GameField;
 
 /**
  * WindowManager is a manager for main window of application.
@@ -39,18 +40,22 @@ public class WindowManager
      */
     private Shell window;
     
-    private final Field field;
+    private final GameField field;
+    
+    private final Game game;
     
     private StatusLine statusLine;
+
     
     /**
      * Constructor
      * 
      * @param field 
      */
-    public WindowManager(Field field)
+    public WindowManager(GameField field, Game game)
     {
         this.field = field;
+        this.game = game;
         
         initShell();
         initMenuBar();
@@ -73,6 +78,14 @@ public class WindowManager
         }
         display.dispose();
     }
+    
+    /**
+     * redraw the main window
+     */
+    public void redraw()
+    {
+        window.redraw();
+    }
 
     private void initShell()
     {
@@ -82,7 +95,7 @@ public class WindowManager
         
         window.addPaintListener(new GameFieldPaintListener(display, field));        
         window.addShellListener(new WindowShellListener());
-        window.addMouseListener(new WindowMouseListener(window, field, GameFieldPaintListener.STEP));
+        window.addMouseListener(new WindowMouseListener(window, game, GameFieldPaintListener.STEP));
     }
 
     private void initMenuBar()
@@ -163,8 +176,8 @@ public class WindowManager
     private class NewGameItemListener implements SelectionListener
     {
         public void widgetSelected(SelectionEvent event)
-        {            
-            field.clear();
+        {   
+            game.newGame();
             window.redraw();
         }
 
@@ -299,5 +312,5 @@ public class WindowManager
         {
             // not supported
         }
-    }    
+    }
 }

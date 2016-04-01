@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
-import model.Field;
+import model.GameField;
 import model.PointState;
 import model.Surround;
 
@@ -19,17 +19,18 @@ import org.eclipse.swt.graphics.Point;
 
 public class SurroundsFinder
 {
-    private final Field field;
+    private final GameField field;
     
     private PointState surroundType;
     
     private Set<Point> fillPoints = new HashSet<Point>();
     
-    public SurroundsFinder(Field field)
+    public SurroundsFinder(GameField field)
     {
         this.field = field;
     }
 
+    //TODO: optimize
     public List<Surround> findNewSurrounds(int x, int y)
     {
         List<Surround> result = new ArrayList<Surround>();

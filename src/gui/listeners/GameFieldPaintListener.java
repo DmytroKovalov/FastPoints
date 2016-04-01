@@ -1,8 +1,8 @@
-package gui;
+package gui.listeners;
 
 import java.util.List;
 
-import model.Field;
+import model.GameField;
 import model.PointState;
 import model.Surround;
 
@@ -20,12 +20,11 @@ import org.eclipse.swt.widgets.Display;
  * 
  * @author DKovalov
  */
-//TODO: move to package gui.listeners
-class GameFieldPaintListener implements PaintListener
+public class GameFieldPaintListener implements PaintListener
 {
     private Display display;
 
-    private Field field;
+    private GameField field;
 
     private GC gc;
     
@@ -41,7 +40,7 @@ class GameFieldPaintListener implements PaintListener
 
     public final static int HALF_STEP = STEP / 2;
 
-    public GameFieldPaintListener(Display display, Field field)
+    public GameFieldPaintListener(Display display, GameField field)
     {
         this.display = display;
         this.field = field;
@@ -50,7 +49,7 @@ class GameFieldPaintListener implements PaintListener
         
     }
 
-    public Field getField()
+    public GameField getField()
     {
         return field;
     }

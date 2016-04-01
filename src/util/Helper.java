@@ -3,7 +3,7 @@ package util;
 import java.util.ArrayList;
 import java.util.List;
 
-import model.Field;
+import model.GameField;
 import model.PointState;
 
 import org.eclipse.swt.graphics.Point;
@@ -16,7 +16,7 @@ import org.eclipse.swt.graphics.Point;
  */
 public class Helper
 {
-    private static Field field;
+    private static GameField field;
 
     private Helper()
     {
@@ -164,7 +164,7 @@ public class Helper
         return result;
     }
 
-    public static void setGameField(Field field)
+    public static void setGameField(GameField field)
     {
         Helper.field = field;
     }

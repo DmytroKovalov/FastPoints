@@ -19,7 +19,7 @@ public class Surround
 
     private final boolean isRed;
 
-    private static Field field;
+    private static GameField field;
 
     public Surround(PointState pointState)
     {
@@ -78,7 +78,7 @@ public class Surround
         return isRed;
     }
     
-    public static void setGameField(Field field)
+    public static void setGameField(GameField field)
     {
         Surround.field = field;
     }
