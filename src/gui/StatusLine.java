@@ -35,6 +35,11 @@ public class StatusLine extends StyledText
     // one public method: void utadeStatusLine(GameState gameState){...}
     public void setScore(int red, int blue)
     {
+        assert(red >= 0);
+        assert(red < 1000);
+        assert(blue >= 0);
+        assert(blue < 1000);
+        
         setText(" 000 : 000");
 
         setStyleRange(new StyleRange(1, 3, redColor, null));

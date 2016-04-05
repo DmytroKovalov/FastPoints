@@ -36,7 +36,7 @@ public class SurroundsFinder
         List<Surround> result = new ArrayList<Surround>();
         surroundType = field.getPointState(x, y);
 
-        //TODO: check for another surrounders
+        //TODO: check for another surrounds
         List<Point> neighbours = Helper.getAllEnemyOrEmptyNeighbours(x, y);
         List<Point> canSkip = new ArrayList<Point>();        
         for (Point neighbour : neighbours)

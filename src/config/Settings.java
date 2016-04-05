@@ -22,8 +22,8 @@ public class Settings
     
     private void setDefaultValues()
     {
-        fieldWidth = 15;
-        fieldHeight = 10;
+        fieldWidth = 25;
+        fieldHeight = 20;
         gameMode = GameMode.HUMAN_VS_HUMAN;
     }
     

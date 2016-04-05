@@ -56,4 +56,10 @@ public class RandomAIPlayer
             }
         }
     }
+
+    public void newGame()
+    {
+        emptyPoints.clear();
+        initEmptyPointsSet();
+    }
 }

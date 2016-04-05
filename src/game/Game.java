@@ -1,5 +1,6 @@
 package game;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.swt.graphics.Point;
@@ -19,14 +20,20 @@ public class Game
     private final WindowManager manager;
 
     private final SurroundsFinder finder;
+    
+    private final AIPlayer aiPlayer;
 
     private boolean isCurrentRed;
+    
+    private List<Point> redPoints = new ArrayList<Point>();
+    private List<Point> bluePoints = new ArrayList<Point>();
 
     public Game(GameField field)
     {
         this.field = field;
         this.manager = new WindowManager(field, this);
         this.finder = new SurroundsFinder(field);
+        this.aiPlayer = new AIPlayer(field);
     }
 
     public void nextStep(int i, int j)
@@ -63,7 +70,7 @@ public class Game
             if (putPointIfWecan(i, j))
             {
                 manager.redraw();
-                Point point = AIPlayer.nextStep(i, j);
+                Point point = aiPlayer.nextStep(i, j);
                 if (point == null)
                 {
                     // end game; TODO: implement
@@ -79,7 +86,8 @@ public class Game
     {
         boolean isChanged = false;
         PointState state = field.getPointState(i, j);
-        if (state == PointState.EMPTY)
+        //TODO: add checking - we can not add point into surround
+        if (state == PointState.EMPTY)            
         {
             isChanged = true;
             putPoint(i, j);
@@ -111,6 +119,9 @@ public class Game
     public void newGame()
     {
         field.clear();
+        redPoints.clear();
+        bluePoints.clear();
+        aiPlayer.newGame();
         isCurrentRed = false;
     }
 }

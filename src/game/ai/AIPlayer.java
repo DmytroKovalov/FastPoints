@@ -6,15 +6,20 @@ import model.GameField;
 
 public class AIPlayer
 {
-    private static RandomAIPlayer aiPlayer;
+    private final RandomAIPlayer aiPlayer;
 
-    public static Point nextStep(int i, int j)
+    public AIPlayer(GameField field)
+    {
+        aiPlayer = new RandomAIPlayer(field);
+    }
+
+    public Point nextStep(int i, int j)
     {
         return aiPlayer.nextStep(new Point(i, j));
     }
 
-    public static void setGameField(GameField field)
+    public void newGame()
     {
-        aiPlayer = new RandomAIPlayer(field);
+        aiPlayer.newGame();
     }
 }

@@ -3,7 +3,6 @@ package main;
 import config.ConfigManager;
 import config.Settings;
 import game.Game;
-import game.ai.AIPlayer;
 import model.GameField;
 import model.Surround;
 import util.Helper;
@@ -31,7 +30,6 @@ public class Main
         GameField field = new GameField(settings.getFieldWidth(), settings.getFieldHeight());
         
         Surround.setGameField(field);
-        AIPlayer.setGameField(field);     
         Helper.setGameField(field);
         
         Game game = new Game(field);
