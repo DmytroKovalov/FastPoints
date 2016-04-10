@@ -26,7 +26,9 @@ public class RandomAIPlayer
 
     Point nextStep(Point lastPoint)
     {
+        //TODO: add checking - we can not add point into surround
         emptyPoints.remove(lastPoint);
+        emptyPoints.removeAll(field.getAllSurroundedPoints());
 
         if (emptyPoints.size() == 0)
         {

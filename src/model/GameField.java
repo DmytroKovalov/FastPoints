@@ -2,6 +2,10 @@ package model;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.swt.graphics.Point;
 
@@ -21,6 +25,10 @@ public class GameField
     private PointState[][] grid;
 
     private Collection<Surround> surrounds = new ArrayList<Surround>();
+
+    private Set<Point> allSurroundedPoints = new HashSet<Point>();
+    
+    private Map<Point, PointState> realColorMap = new HashMap<Point, PointState>();
 
     public GameField(int width, int height)
     {
@@ -60,6 +68,7 @@ public class GameField
             }
         }
         surrounds.clear();
+        allSurroundedPoints.clear();
     }
 
     public void resize(int width, int height)
@@ -83,5 +92,28 @@ public class GameField
     public void addAllSurrounds(Collection<Surround> surrounds)
     {
         this.surrounds.addAll(surrounds);
+        for (Surround surround : surrounds)
+        {
+            Collection<Point> innerPoints = surround.getInnerPoints();
+            allSurroundedPoints.addAll(innerPoints);
+            PointState surroundColor = surround.isRed() ? PointState.RED : PointState.BLUE;
+            for (Point point : innerPoints)
+            {
+                if (getPointState(point) != PointState.EMPTY)
+                {
+                    realColorMap.put(point, surroundColor);
+                }
+            }
+        }
+    }
+
+    public Set<Point> getAllSurroundedPoints()
+    {
+        return allSurroundedPoints;
+    }
+    
+    public Map<Point, PointState> getRealColorMap()
+    {
+        return realColorMap;
     }
 }

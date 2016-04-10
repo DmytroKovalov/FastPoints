@@ -1,10 +1,6 @@
 package gui.listeners;
 
-import java.util.List;
-
-import model.GameField;
-import model.PointState;
-import model.Surround;
+import java.util.Collection;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.PaintEvent;
@@ -14,6 +10,10 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Display;
+
+import model.GameField;
+import model.PointState;
+import model.Surround;
 
 /**
  * This class responsible for drawing of game field.
@@ -141,8 +141,8 @@ public class GameFieldPaintListener implements PaintListener
         }
     }
 
-    //TODO:rename or add comment
-    private int[] getPointsLikeArray(List<Point> points)
+    //TODO: rename or add comment
+    private int[] getPointsLikeArray(Collection<Point> points)
     {
         int[] result = new int[points.size() * 2];
         int index = 0;

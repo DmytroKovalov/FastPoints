@@ -1,7 +1,11 @@
 package model;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.swt.graphics.Point;
 
@@ -18,6 +22,8 @@ public class Surround
     private final List<Point> points = new LinkedList<Point>();
 
     private final boolean isRed;
+    
+    private final Set<Point> innerPoints = new HashSet<Point>();
 
     private static GameField field;
 
@@ -41,9 +47,20 @@ public class Surround
         }
     }
     
-    public List<Point> getPoints()
+    public void setInnerPoints(Set<Point> points)
     {
-        return points;
+        innerPoints.clear();
+        innerPoints.addAll(points);
+    }
+    
+    public Collection<Point> getInnerPoints()
+    {
+        return Collections.unmodifiableCollection(innerPoints);
+    }
+     
+    public Collection<Point> getPoints()
+    {
+        return Collections.unmodifiableCollection(points);
     }
 
     private boolean isCorrect(Point point)

@@ -3,10 +3,10 @@ package util;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.swt.graphics.Point;
+
 import model.GameField;
 import model.PointState;
-
-import org.eclipse.swt.graphics.Point;
 
 /**
  * Helper class
@@ -28,7 +28,7 @@ public class Helper
         return getAllEnemyOrEmptyNeighbours(new Point(x, y));
     }
 
-    static List<Point> getAllEnemyOrEmptyNeighbours(Point point)
+    public static List<Point> getAllEnemyOrEmptyNeighbours(Point point)
     {
         PointState current = field.getPointState(point);
         List<Point> result = new ArrayList<Point>();
@@ -76,11 +76,16 @@ public class Helper
         if (point != null)
         {
             PointState current = field.getPointState(point);
-            if (current != state)
+            if ((current != state) && !isInSomeSurround(point))
             {
                 result.add(point);
             }
         }
+    }
+
+    public static boolean isInSomeSurround(Point point)
+    {
+        return field.getAllSurroundedPoints().contains(point);
     }
 
     public static Point getTop(Point point)
@@ -156,8 +161,7 @@ public class Helper
     public static Point getBottomRight(Point point)
     {
         Point result = null;
-        if ((point.x != field.getWidth() - 1)
-                && (point.y != field.getHeight() - 1))
+        if ((point.x != field.getWidth() - 1) && (point.y != field.getHeight() - 1))
         {
             result = new Point(point.x + 1, point.y + 1);
         }
@@ -180,5 +184,5 @@ public class Helper
         int diffY = Math.abs(first.y - second.y);
 
         return (diffX <= 1) && (diffY <= 1);
-    }
+    }   
 }

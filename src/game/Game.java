@@ -76,7 +76,6 @@ public class Game
                     // end game; TODO: implement
                 }
                 putPoint(point.x, point.y);
-                findNewSurrounds(point.x, point.y);
                 manager.redraw();
             }
         }
@@ -86,26 +85,24 @@ public class Game
     {
         boolean isChanged = false;
         PointState state = field.getPointState(i, j);
-        //TODO: add checking - we can not add point into surround
-        if (state == PointState.EMPTY)            
+        if (state == PointState.EMPTY)
         {
-            isChanged = true;
-            putPoint(i, j);
-            findNewSurrounds(i, j);
+            if (!field.getAllSurroundedPoints().contains(new Point(i, j)))
+            {
+                isChanged = true;
+                putPoint(i, j);
+            }
         }
         return isChanged;
     }
-
-    private void findNewSurrounds(int i, int j)
-    {
-        List<Surround> s = finder.findNewSurrounds(i, j);
-        field.addAllSurrounds(s);
-    }
-
+    
     private void putPoint(int i, int j)
     {
         field.setPoint(i, j, isCurrentRed ? PointState.RED : PointState.BLUE);
         isCurrentRed = !isCurrentRed;
+        
+        List<Surround> s = finder.findNewSurrounds(i, j);
+        field.addAllSurrounds(s);
     }
 
     /**

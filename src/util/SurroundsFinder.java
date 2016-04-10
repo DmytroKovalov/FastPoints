@@ -20,48 +20,55 @@ import org.eclipse.swt.graphics.Point;
 public class SurroundsFinder
 {
     private final GameField field;
-    
+
     private PointState surroundType;
-    
+
     private Set<Point> fillPoints = new HashSet<Point>();
-    
+
     public SurroundsFinder(GameField field)
     {
         this.field = field;
     }
 
-    //TODO: optimize
+    // TODO: optimize
     public List<Surround> findNewSurrounds(int x, int y)
     {
+       
+       /* if (field.getPointState(0, 0) != PointState.EMPTY)
+        {
+            int a = 0;
+            a++;
+        }*/
+        
         List<Surround> result = new ArrayList<Surround>();
         surroundType = field.getPointState(x, y);
 
-        //TODO: check for another surrounds
         List<Point> neighbours = Helper.getAllEnemyOrEmptyNeighbours(x, y);
-        List<Point> canSkip = new ArrayList<Point>();        
+        Set<Point> canSkip = new HashSet<Point>();
         for (Point neighbour : neighbours)
         {
             if (canSkip.contains(neighbour))
             {
                 continue;
             }
-                        
+
             if (startFillingFromPoint(neighbour))
             {
                 Surround surround = createSurround();
                 if (surround != null)
                 {
+                    surround.setInnerPoints(fillPoints);
                     result.add(surround);
                 }
-                updateSkipList(canSkip, neighbours);
-                fillPoints.clear();
             }
+            updateSkipList(canSkip, neighbours);
+            fillPoints.clear();
         }
 
         return result;
     }
 
-    private void updateSkipList(List<Point> canSkip, List<Point> neighbours)
+    private void updateSkipList(Set<Point> canSkip, List<Point> neighbours)
     {
         for (Point neighbour : neighbours)
         {
@@ -80,26 +87,23 @@ public class SurroundsFinder
             borderPoints.addAll(getBorderPoints(point));
         }
 
+        if (borderPoints.removeAll(field.getAllSurroundedPoints()))
+        {
+            return null;
+        }
+        
         Point start = findStartPoint(borderPoints);
-        
 
-        
-        //TODO: create new task for this bug: 
-        //1)delete inner points
-        //unimplemented - maybe we can use Convex Hull(http://en.wikipedia.org/wiki/Convex_hull_algorithms)
-        
-        
-        //TODO: implement
-        //2)
-        
+        // TODO: implement find path A*
+
         Surround path = new Surround(field.getPointState(start.x, start.y));
         path.addPoint(start);
         Point current = start;
         Point end = start;
-        
+
         int iteration = 0;
-        final int maxIteration = field.getHeight()*field.getWidth();
-        
+        final int maxIteration = field.getHeight() * field.getWidth();
+
         while (iteration < maxIteration)
         {
             iteration++;
@@ -121,19 +125,19 @@ public class SurroundsFinder
             Integer min = Collections.min(distanceToPoint.keySet());
             end = current;
             current = distanceToPoint.get(min);
-            path.addPoint(current);     
+            path.addPoint(current);
         }
-        
-        if(iteration >= maxIteration)
+
+        if (iteration >= maxIteration)
         {
             throw new IllegalArgumentException("Iteration limit  " + path);
         }
-        
+
         if (!path.isCorrect())
-        {            
+        {
             throw new IllegalArgumentException("Incorrect surround  " + path);
-        }    
-        
+        }
+
         return path;
     }
 
@@ -162,12 +166,12 @@ public class SurroundsFinder
                 break;
             }
         }
-        
+
         if (result == null)
         {
             throw new IllegalArgumentException("Can't find start point in borderPoints" + borderPoints);
         }
-        return result;        
+        return result;
     }
 
     private List<Point> getNeigboursOnBorder(Point mainPoint, Set<Point> borderPoints)
@@ -179,23 +183,21 @@ public class SurroundsFinder
             {
                 result.add(point);
             }
-        }        
+        }
         return result;
     }
 
     private List<Point> getBorderPoints(Point point)
     {
         List<Point> result = new ArrayList<Point>();
-        
+
         addIfItIsBorder(result, Helper.getTop(point));
         addIfItIsBorder(result, Helper.getBottom(point));
         addIfItIsBorder(result, Helper.getLeft(point));
         addIfItIsBorder(result, Helper.getRight(point));
-        
+
         return result;
     }
-    
-     
 
     private void addIfItIsBorder(List<Point> result, Point point)
     {
@@ -207,17 +209,16 @@ public class SurroundsFinder
 
     private boolean startFillingFromPoint(Point startPoint)
     {
-        //TODO: check for non empty surrounding
         Queue<Point> pointsForVisit = new LinkedList<Point>();
         pointsForVisit.add(startPoint);
-        
+
         boolean isClosed = !isOnBorder(startPoint);
         while (isClosed && !pointsForVisit.isEmpty())
         {
             Point currentPoint = pointsForVisit.remove();
             fillPoints.add(currentPoint);
 
-            //TODO: check for another surrounders
+            // TODO: check for another surrounders
             List<Point> neighbours = getAllNotVisitedNeighbors(currentPoint);
             pointsForVisit.addAll(neighbours);
 
@@ -230,40 +231,58 @@ public class SurroundsFinder
                 }
             }
         }
-        
-        if (!isClosed)
+       
+        return isClosed && isNoneEmpty();
+    }
+
+    private boolean isNoneEmpty()
+    {
+        boolean result = false;
+        for (Point point : fillPoints)
         {
-            fillPoints.clear();
+            PointState state = field.getPointState(point);
+            if ((state != surroundType) && (state != PointState.EMPTY))
+            {
+                result = true;
+            }
         }
-        
-        return isClosed;
+        return result;
     }
 
     private List<Point> getAllNotVisitedNeighbors(Point point)
     {
         List<Point> result = new LinkedList<Point>();
-  
+
         addIfNeedVisit(result, Helper.getTop(point));
         addIfNeedVisit(result, Helper.getBottom(point));
         addIfNeedVisit(result, Helper.getLeft(point));
         addIfNeedVisit(result, Helper.getRight(point));
-        
+
         return result;
     }
-    
-    private void addIfNeedVisit(List<Point> result, Point neighbour)
+
+    private void addIfNeedVisit(List<Point> result, Point point)
     {
-        if (neighbour == null)
+        if (point == null)
         {
             return;
         }
-        
-        PointState neighbourState = field.getPointState(neighbour);
-        if (neighbourState != surroundType) // we can fill
+
+        PointState state = null;
+        if (field.getAllSurroundedPoints().contains(point))
         {
-            if (!fillPoints.contains(neighbour))
+            state = field.getRealColorMap().get(point);
+        }
+        if (state == null)
+        {
+            state = field.getPointState(point);
+        }
+        
+        if (state != surroundType) // we can fill
+        {
+            if (!fillPoints.contains(point))
             {
-                result.add(neighbour);
+                result.add(point);
             }
         }
     }
@@ -277,17 +296,10 @@ public class SurroundsFinder
         return result;
     }
     /*
-    private static class PointComparator implements Comparator<Point>
-    {
-        @Override
-        public int compare(Point firstPoint, Point secondPoint)
-        {
-            int result =  firstPoint.y - secondPoint.y;
-            if (result == 0)
-            {
-                result = firstPoint.x - secondPoint.x;
-            }
-            return result;
-        }       
-    }*/      
+     * private static class PointComparator implements Comparator<Point> {
+     * 
+     * @Override public int compare(Point firstPoint, Point secondPoint) { int
+     * result = firstPoint.y - secondPoint.y; if (result == 0) { result =
+     * firstPoint.x - secondPoint.x; } return result; } }
+     */
 }

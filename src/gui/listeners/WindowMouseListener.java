@@ -37,7 +37,7 @@ public class WindowMouseListener implements MouseListener
         int i = e.x / step;
         int j = e.y / step;
 
-        //TODO:add supporting of this mode and remove this message
+        //TODO: add supporting of this mode and remove this message
         GameMode mod = ConfigManager.getSettings().getGameMode();
         if (mod == GameMode.AI_VS_AI)
         {
