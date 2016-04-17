@@ -1,25 +1,23 @@
 package util;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
+
+import org.eclipse.swt.graphics.Point;
 
 import model.GameField;
 import model.PointState;
 import model.Surround;
 
-import org.eclipse.swt.graphics.Point;
-
 public class SurroundsFinder
 {
     private final GameField field;
+    
+    private final SurroundBuilder builder;
 
     private PointState surroundType;
 
@@ -28,18 +26,11 @@ public class SurroundsFinder
     public SurroundsFinder(GameField field)
     {
         this.field = field;
+        this.builder = new SurroundBuilder(field);
     }
 
-    // TODO: optimize
     public List<Surround> findNewSurrounds(int x, int y)
     {
-       
-       /* if (field.getPointState(0, 0) != PointState.EMPTY)
-        {
-            int a = 0;
-            a++;
-        }*/
-        
         List<Surround> result = new ArrayList<Surround>();
         surroundType = field.getPointState(x, y);
 
@@ -92,101 +83,9 @@ public class SurroundsFinder
             return null;
         }
         
-        Point start = findStartPoint(borderPoints);
-
-        // TODO: implement find path A*
-
-        Surround path = new Surround(field.getPointState(start.x, start.y));
-        path.addPoint(start);
-        Point current = start;
-        Point end = start;
-
-        int iteration = 0;
-        final int maxIteration = field.getHeight() * field.getWidth();
-
-        while (iteration < maxIteration)
-        {
-            iteration++;
-            Set<Point> neighbors = getNeighborsFrom(current, borderPoints);
-            neighbors.removeAll(path.getPoints());
-            neighbors.remove(end);
-
-            if (neighbors.isEmpty())
-            {
-                break;
-            }
-
-            Map<Integer, Point> distanceToPoint = new HashMap<Integer, Point>();
-            for (Point point : neighbors)
-            {
-                Integer distance = calculateDistances(current, point);
-                distanceToPoint.put(distance, point);
-            }
-            Integer min = Collections.min(distanceToPoint.keySet());
-            end = current;
-            current = distanceToPoint.get(min);
-            path.addPoint(current);
-        }
-
-        if (iteration >= maxIteration)
-        {
-            throw new IllegalArgumentException("Iteration limit  " + path);
-        }
-
-        if (!path.isCorrect())
-        {
-            throw new IllegalArgumentException("Incorrect surround  " + path);
-        }
-
-        return path;
+        return builder.createSurround(borderPoints, fillPoints.iterator().next());   
     }
-
-    private Integer calculateDistances(Point first, Point second)
-    {
-        return Math.abs(first.x - second.x) + Math.abs(first.y - second.y);
-    }
-
-    private Set<Point> getNeighborsFrom(Point point, Collection<Point> pointsForRetain)
-    {
-        Set<Point> resultPoints = new HashSet<Point>();
-        resultPoints.addAll(Helper.getAllNeighbours(point));
-        resultPoints.retainAll(pointsForRetain);
-        return resultPoints;
-    }
-
-    private Point findStartPoint(Set<Point> borderPoints)
-    {
-        Point result = null;
-        for (Point point : borderPoints)
-        {
-            List<Point> neighbours = getNeigboursOnBorder(point, borderPoints);
-            if (neighbours.size() == 2)
-            {
-                result = point;
-                break;
-            }
-        }
-
-        if (result == null)
-        {
-            throw new IllegalArgumentException("Can't find start point in borderPoints" + borderPoints);
-        }
-        return result;
-    }
-
-    private List<Point> getNeigboursOnBorder(Point mainPoint, Set<Point> borderPoints)
-    {
-        List<Point> result = new ArrayList<Point>();
-        for (Point point : borderPoints)
-        {
-            if (Helper.areNeighbours(point, mainPoint))
-            {
-                result.add(point);
-            }
-        }
-        return result;
-    }
-
+   
     private List<Point> getBorderPoints(Point point)
     {
         List<Point> result = new ArrayList<Point>();
@@ -212,19 +111,18 @@ public class SurroundsFinder
         Queue<Point> pointsForVisit = new LinkedList<Point>();
         pointsForVisit.add(startPoint);
 
-        boolean isClosed = !isOnBorder(startPoint);
+        boolean isClosed = !Helper.isOnBorder(startPoint);
         while (isClosed && !pointsForVisit.isEmpty())
         {
             Point currentPoint = pointsForVisit.remove();
             fillPoints.add(currentPoint);
 
-            // TODO: check for another surrounders
             List<Point> neighbours = getAllNotVisitedNeighbors(currentPoint);
             pointsForVisit.addAll(neighbours);
 
             for (Point neighbour : neighbours)
             {
-                if (isOnBorder(neighbour))
+                if (Helper.isOnBorder(neighbour))
                 {
                     isClosed = false;
                     break;
@@ -244,6 +142,7 @@ public class SurroundsFinder
             if ((state != surroundType) && (state != PointState.EMPTY))
             {
                 result = true;
+                break;
             }
         }
         return result;
@@ -286,20 +185,4 @@ public class SurroundsFinder
             }
         }
     }
-
-    private boolean isOnBorder(Point point)
-    {
-        boolean result = point.x == 0;
-        result |= point.x == field.getWidth() - 1;
-        result |= point.y == 0;
-        result |= point.y == field.getHeight() - 1;
-        return result;
-    }
-    /*
-     * private static class PointComparator implements Comparator<Point> {
-     * 
-     * @Override public int compare(Point firstPoint, Point secondPoint) { int
-     * result = firstPoint.y - secondPoint.y; if (result == 0) { result =
-     * firstPoint.x - secondPoint.x; } return result; } }
-     */
 }

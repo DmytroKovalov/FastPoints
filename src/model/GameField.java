@@ -69,6 +69,7 @@ public class GameField
         }
         surrounds.clear();
         allSurroundedPoints.clear();
+        realColorMap.clear();
     }
 
     public void resize(int width, int height)
@@ -94,7 +95,7 @@ public class GameField
         this.surrounds.addAll(surrounds);
         for (Surround surround : surrounds)
         {
-            Collection<Point> innerPoints = surround.getInnerPoints();
+            Set<Point> innerPoints = surround.getInnerPoints();
             allSurroundedPoints.addAll(innerPoints);
             PointState surroundColor = surround.isRed() ? PointState.RED : PointState.BLUE;
             for (Point point : innerPoints)

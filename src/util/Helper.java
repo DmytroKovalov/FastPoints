@@ -1,7 +1,9 @@
 package util;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.swt.graphics.Point;
 
@@ -184,5 +186,44 @@ public class Helper
         int diffY = Math.abs(first.y - second.y);
 
         return (diffX <= 1) && (diffY <= 1);
-    }   
+    }
+
+    public static Set<Point> getAllNotEmptyNeighbours(Point point)
+    {
+        Set<Point> result = new HashSet<Point>();
+
+        addIfNotNullAndNotEmpty(result, getTop(point));
+        addIfNotNullAndNotEmpty(result, getBottom(point));
+        addIfNotNullAndNotEmpty(result, getLeft(point));
+        addIfNotNullAndNotEmpty(result, getRight(point));
+
+        addIfNotNullAndNotEmpty(result, getTopLeft(point));
+        addIfNotNullAndNotEmpty(result, getTopRight(point));
+        addIfNotNullAndNotEmpty(result, getBottomLeft(point));
+        addIfNotNullAndNotEmpty(result, getBottomRight(point));
+
+        return result;
+        
+    }
+
+    private static void addIfNotNullAndNotEmpty(Set<Point> result, Point point)
+    {
+        if (point != null)
+        {
+            PointState current = field.getPointState(point);
+            if (current != PointState.EMPTY)
+            {
+                result.add(point);
+            }
+        }      
+    }
+    
+    public static boolean isOnBorder(Point point)
+    {
+        boolean result = point.x == 0;
+        result |= point.x == field.getWidth() - 1;
+        result |= point.y == 0;
+        result |= point.y == field.getHeight() - 1;
+        return result;
+    }
 }

@@ -1,6 +1,5 @@
 package model;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -53,14 +52,14 @@ public class Surround
         innerPoints.addAll(points);
     }
     
-    public Collection<Point> getInnerPoints()
+    public Set<Point> getInnerPoints()
     {
-        return Collections.unmodifiableCollection(innerPoints);
+        return Collections.unmodifiableSet(innerPoints);
     }
      
-    public Collection<Point> getPoints()
+    public List<Point> getPoints()
     {
-        return Collections.unmodifiableCollection(points);
+        return Collections.unmodifiableList(points);
     }
 
     private boolean isCorrect(Point point)
