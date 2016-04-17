@@ -40,33 +40,65 @@ class SurroundBuilder
 
     private Surround buildPath(Graph g, Point start)
     {
-        final int flag = -1;
         Point second = g.getAllNeighbours(start).iterator().next();
+        Map<Point, Point> pointToPrevious = new HashMap<Point, Point>();
+        pointToPrevious.put(second, start);
 
-        Map<Point, VertexInfo> verticesInfo = createMap(g.getAllVertices());
-        
-        verticesInfo.get(start).value = flag;
         Queue<Point> queue = new LinkedList<Point>();
-        queue.add(second);
-        while(!queue.isEmpty())
+        for (Point point : g.getAllNeighbours(second))
+        {
+            if (!point.equals(start))
+            {
+                pointToPrevious.put(point, second);
+                queue.add(point);
+            }
+        }
+        
+        boolean startFound = false;
+        while (!queue.isEmpty() && !startFound)
         {
             Point current = queue.poll();
-            
-            
-            //A* - doesn't solve problem
+            for (Point point : g.getAllNeighbours(current))
+            {
+                Point prev = pointToPrevious.get(point);
+                if (prev == null)
+                {
+                    pointToPrevious.put(point, current);
+                    queue.add(point);
+                    
+                    if (point.equals(start))
+                    {
+                        startFound = true;
+                    }
+                }
+            }    
         }
+        
         Surround path = new Surround(field.getPointState(start));
+        path.addPoint(start);
+        
+        if (startFound)
+        {
+            buildPath(pointToPrevious, start, path);
+        }
+        
         return path;
     }
 
-    private Map<Point, VertexInfo> createMap(Set<Point> borderPoints)
+    private void buildPath(Map<Point, Point> pointToPrevious, Point start,
+            Surround path)
     {
-        Map<Point, VertexInfo> result = new HashMap<Point, VertexInfo>();
-        for (Point point : borderPoints)
+        Point current = pointToPrevious.get(start);
+        path.addPoint(current);
+        while (true)
         {
-            result.put(point, new VertexInfo());
+            current = pointToPrevious.get(current);
+            if (current.equals(start))
+            {
+                break;
+            }
+            path.addPoint(current);
         }
-        return result;
     }
 
     private Point findNextStartPoint(Graph g, Set<Point> excluded) 
@@ -95,12 +127,5 @@ class SurroundBuilder
             throw new IllegalArgumentException("Can't find start point in Graph");
         }
         return result;
-    }
-    
-    private static class VertexInfo
-    {
-        int value;
-
-        Point prev;
     }
 }

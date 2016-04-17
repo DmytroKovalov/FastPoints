@@ -112,6 +112,7 @@ public class SurroundsFinder
         pointsForVisit.add(startPoint);
 
         boolean isClosed = !Helper.isOnBorder(startPoint);
+        //TODO: add exit after many iterations(need for debug out of memory on pointsForVisit.addAll()) 
         while (isClosed && !pointsForVisit.isEmpty())
         {
             Point currentPoint = pointsForVisit.remove();
