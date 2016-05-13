@@ -5,7 +5,7 @@ Repository for game FastPoints
 
 @author Dmytro Kovalov
 
-JDK version: (x86) 1.7.0_51
+JDK version: (x86) 1.8.0_91
 
 Use external jars:
 swt.jar (v. 4.3)   http://www.eclipse.org/swt/
