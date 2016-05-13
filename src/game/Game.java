@@ -1,6 +1,5 @@
 package game;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.swt.graphics.Point;
@@ -20,13 +19,12 @@ public class Game
     private final WindowManager manager;
 
     private final SurroundsFinder finder;
-    
+
     private final AIPlayer aiPlayer;
 
+    private GameState state;
+
     private boolean isCurrentRed;
-    
-    private List<Point> redPoints = new ArrayList<Point>();
-    private List<Point> bluePoints = new ArrayList<Point>();
 
     public Game(GameField field)
     {
@@ -34,6 +32,15 @@ public class Game
         this.manager = new WindowManager(field, this);
         this.finder = new SurroundsFinder(field);
         this.aiPlayer = new AIPlayer(field);
+        initGameState();
+
+    }
+
+    private void initGameState()
+    {
+        state = GameState.IN_PROGRESS;
+        GameState.red = 0;
+        GameState.blue = 0;
     }
 
     public void nextStep(int i, int j)
@@ -42,9 +49,9 @@ public class Game
         {
             return;
         }
-                
-        GameMode mod = ConfigManager.getSettings().getGameMode();
-        switch (mod)
+
+        GameMode mode = ConfigManager.getSettings().getGameMode();
+        switch (mode)
         {
             case AI_VS_AI:
                 // This functionality is not implemented yet.
@@ -53,13 +60,14 @@ public class Game
                 humanAndAIStep(i, j);
                 break;
             case HUMAN_VS_HUMAN:
-                if (putPointIfWecan(i, j))
+                if (putPointIfWeCan(i, j))
                 {
                     manager.redraw();
                 }
                 break;
             default:
-                throw new IllegalArgumentException("Unexpectable mode: " + mod);
+                throw new IllegalArgumentException(
+                        "Unexpectable mode: " + mode);
         }
     }
 
@@ -67,25 +75,27 @@ public class Game
     {
         if ((i < field.getWidth()) && (j < field.getHeight()))
         {
-            if (putPointIfWecan(i, j))
+            if (putPointIfWeCan(i, j))
             {
                 manager.redraw();
-                Point point = aiPlayer.nextStep(i, j);
-                if (point == null)
+                if (state == GameState.IN_PROGRESS)
                 {
-                    // end game; TODO: implement
+                    Point point = aiPlayer.nextStep();
+                    putPoint(point.x, point.y);
+                    manager.redraw();
                 }
-                putPoint(point.x, point.y);
-                manager.redraw();
             }
         }
     }
 
-    private boolean putPointIfWecan(int i, int j)
+    private boolean putPointIfWeCan(int i, int j)
     {
         boolean isChanged = false;
-        PointState state = field.getPointState(i, j);
-        if (state == PointState.EMPTY)
+        if (state != GameState.IN_PROGRESS)
+        {
+            return isChanged;
+        }
+        if (field.getPointState(i, j) == PointState.EMPTY)
         {
             if (!field.getAllSurroundedPoints().contains(new Point(i, j)))
             {
@@ -95,14 +105,44 @@ public class Game
         }
         return isChanged;
     }
-    
+
     private void putPoint(int i, int j)
     {
         field.setPoint(i, j, isCurrentRed ? PointState.RED : PointState.BLUE);
-        isCurrentRed = !isCurrentRed;
-        
+
+        if (isCurrentRed)
+        {
+            GameState.red++;
+        }
+        else
+        {
+            GameState.blue++;
+        }
+
         List<Surround> s = finder.findNewSurrounds(i, j);
-        field.addAllSurrounds(s);
+        int numberOfInnerPoints = field.addAllSurrounds(s);
+        int sign = isCurrentRed ? 1 : -1;
+        GameState.red += sign * numberOfInnerPoints;
+        GameState.blue -= sign * numberOfInnerPoints;
+
+        isCurrentRed = !isCurrentRed;
+
+        if (field.getEmptyPoints().isEmpty())
+        {
+            setEndGameState();
+        }
+    }
+
+    private void setEndGameState()
+    {
+        if (GameState.red == GameState.blue)
+        {
+            state = GameState.GAME_DRAW;
+        }
+        else
+        {
+            state = (GameState.red > GameState.blue) ? GameState.RED_WIN : GameState.BLUE_WIN;
+        }
     }
 
     /**
@@ -116,9 +156,12 @@ public class Game
     public void newGame()
     {
         field.clear();
-        redPoints.clear();
-        bluePoints.clear();
-        aiPlayer.newGame();
         isCurrentRed = false;
+        initGameState();
+    }
+
+    public GameState getGameState()
+    {
+        return state;
     }
 }

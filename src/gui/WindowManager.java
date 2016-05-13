@@ -85,6 +85,7 @@ public class WindowManager
     public void redraw()
     {
         window.redraw();
+        statusLine.utadeStatusLine(game.getGameState());
     }
 
     private void initShell()
@@ -161,10 +162,6 @@ public class WindowManager
     private void initStatusLine()
     { 
         statusLine = new StatusLine(window, display, SWT.BORDER | SWT.RIGHT);
-        statusLine.setScore(0, 0);
-        //statusLine.setWinnerRed();
-        //statusLine.setWinnerBlue();
-        //statusLine.setDraw();
         FormData labelData = new FormData();
         labelData.left = new FormAttachment(0);
         labelData.right = new FormAttachment(100);
@@ -178,7 +175,7 @@ public class WindowManager
         public void widgetSelected(SelectionEvent event)
         {   
             game.newGame();
-            window.redraw();
+            redraw();
         }
 
         @Override

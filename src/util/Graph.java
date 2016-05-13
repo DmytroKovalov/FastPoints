@@ -8,7 +8,7 @@ import java.util.Set;
 
 import org.eclipse.swt.graphics.Point;
 
-public class Graph
+class Graph
 {
     private final Set<Point> vertices = new HashSet<Point>();
 

@@ -9,6 +9,7 @@ public enum GameMode
     //TODO: rename this method [getStringRepresentations,getValuesLikeStrings, ...] 
     public static String[] getValues()
     {
+         
         String[] result = new String[3];
         GameMode[] values = GameMode.values();
 

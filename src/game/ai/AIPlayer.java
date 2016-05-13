@@ -13,13 +13,8 @@ public class AIPlayer
         aiPlayer = new RandomAIPlayer(field);
     }
 
-    public Point nextStep(int i, int j)
+    public Point nextStep()
     {
-        return aiPlayer.nextStep(new Point(i, j));
-    }
-
-    public void newGame()
-    {
-        aiPlayer.newGame();
-    }
+        return aiPlayer.nextStep();
+    }    
 }

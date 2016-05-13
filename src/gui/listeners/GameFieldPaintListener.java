@@ -45,13 +45,7 @@ public class GameFieldPaintListener implements PaintListener
         this.display = display;
         this.field = field;
         this.red = display.getSystemColor(SWT.COLOR_RED);
-        this.blue = display.getSystemColor(SWT.COLOR_BLUE);
-        
-    }
-
-    public GameField getField()
-    {
-        return field;
+        this.blue = display.getSystemColor(SWT.COLOR_BLUE);       
     }
 
     @Override

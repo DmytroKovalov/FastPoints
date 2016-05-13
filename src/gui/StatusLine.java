@@ -7,6 +7,8 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 
+import game.GameState;
+
 /**
  * describe me
  * 
@@ -31,16 +33,35 @@ public class StatusLine extends StyledText
         setEnabled(false);
     }
 
-    // TODO: create class GameState and this class must have only
-    // one public method: void utadeStatusLine(GameState gameState){...}
-    public void setScore(int red, int blue)
+    public void utadeStatusLine(GameState state)
+    {
+        switch(state)
+        {
+            case BLUE_WIN:
+                setText(" Blue win!!!", blueColor);
+                break;
+            case GAME_DRAW:
+                setText(" Game draw!", greenColor);
+                break;
+            case IN_PROGRESS:
+                setScore(GameState.red, GameState.blue);
+                break;
+            case RED_WIN:
+                setText(" Red win!!!", redColor);
+                break;
+            default:
+                throw new IllegalArgumentException("Wrong game state");            
+        }   
+    }
+    
+    private void setScore(int red, int blue)
     {
         assert(red >= 0);
         assert(red < 1000);
         assert(blue >= 0);
         assert(blue < 1000);
         
-        setText(" 000 : 000");
+        setText(String.format(" %03d : %03d", red, blue));
 
         setStyleRange(new StyleRange(1, 3, redColor, null));
 
@@ -51,21 +72,6 @@ public class StatusLine extends StyledText
         setStyleRange(boldStyle);
 
         setStyleRange(new StyleRange(7, 3, blueColor, null));
-    }
-    
-    public void setWinnerRed()
-    {
-        setText(" Red win!!!", redColor);
-    }
-    
-    public void setWinnerBlue()
-    {
-        setText(" Blue win!!!", blueColor);
-    }
-    
-    public void setDraw()
-    { 
-        setText(" Game draw!", greenColor);
     }
     
     private void setText(String text, Color color)
