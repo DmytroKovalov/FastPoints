@@ -227,7 +227,7 @@ public class WindowManager
                 Settings settings = ConfigManager.getSettings();
                 field.resize(settings.getFieldWidth(), settings.getFieldHeight());
                 game.newGame();
-                window.redraw();
+                redraw();
             }
         }
 

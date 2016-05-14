@@ -33,7 +33,6 @@ public class Game
         this.finder = new SurroundsFinder(field);
         this.aiPlayer = new AIPlayer(field);
         initGameState();
-
     }
 
     private void initGameState()

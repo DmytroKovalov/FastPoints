@@ -200,8 +200,19 @@ public class SettingsWindow
         public void widgetSelected(SelectionEvent event)
         {
             Settings settings = ConfigManager.getSettings();
-            settings.setFieldWidth(Integer.parseInt(widthText.getText()));
-            settings.setFieldHeight(Integer.parseInt(heightText.getText()));
+            int width = settings.getFieldWidth();
+            int height = settings.getFieldHeight();
+            try
+            {
+                width = Integer.parseInt(widthText.getText());
+                height = Integer.parseInt(heightText.getText());
+            }
+            catch (NumberFormatException exp)
+            {
+                //ignore incorrect value
+            }    
+            settings.setFieldWidth(width);
+            settings.setFieldHeight(height);
             
             GameMode newMod = GameMode.valueOf(mod.getItem(mod.getSelectionIndex()));
             settings.setGameMode(newMod);

@@ -15,12 +15,12 @@ public class Settings
     
     private GameMode gameMode;
     
-    protected Settings()
+    Settings()
     {
         setDefaultValues();
     }
     
-    private void setDefaultValues()
+    void setDefaultValues()
     {
         fieldWidth = 25;
         fieldHeight = 20;
@@ -34,7 +34,20 @@ public class Settings
 
     public void setFieldWidth(int fieldWidth)
     {
-        this.fieldWidth = fieldWidth;
+        this.fieldWidth = getCorrectValue(fieldWidth, 15, 60);
+    }
+
+    private int getCorrectValue(int value, int min, int max)
+    {
+        if (value < min)
+        {
+            return min;
+        }
+        if (value > max)
+        {
+            return max;
+        }
+        return value;
     }
 
     public int getFieldHeight()
@@ -44,7 +57,7 @@ public class Settings
 
     public void setFieldHeight(int fieldHeight)
     {
-        this.fieldHeight = fieldHeight;
+        this.fieldHeight = getCorrectValue(fieldHeight, 15, 40);
     }
 
     public GameMode getGameMode()
@@ -54,6 +67,13 @@ public class Settings
 
     public void setGameMode(GameMode gameMode)
     {
-        this.gameMode = gameMode;
-    }    
+        if (gameMode != null)
+        {
+            this.gameMode = gameMode;
+        }
+        else
+        {
+            this.gameMode = GameMode.HUMAN_VS_HUMAN;
+        }
+    }
 }

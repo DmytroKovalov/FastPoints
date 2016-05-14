@@ -31,13 +31,19 @@ public class ConfigManager
         }
         catch (InvalidFileFormatException exp)
         {
-            System.out.println(exp.getMessage());
-            exp.printStackTrace();
+            System.err.println(exp.getMessage());
+            exp.printStackTrace(System.err);
+            INSTANCE.setDefaultValues();
         }
         catch (IOException exp)
         {
-            System.out.println(exp.getMessage());
-            exp.printStackTrace();
+            System.err.println(exp.getMessage());
+            exp.printStackTrace(System.err);
+            INSTANCE.setDefaultValues();
+        }
+        catch (IllegalArgumentException exp)
+        {
+            INSTANCE.setDefaultValues();
         }
     }
     
@@ -47,22 +53,24 @@ public class ConfigManager
         try
         {
             ini = new Wini(new File(CONFIG_FILE_NAME));
+            //ini.putComment("field", " width in [15, 60]; height in [15, 40] ");
             ini.put("field", "width", INSTANCE.getFieldWidth());
             ini.put("field", "height", INSTANCE.getFieldHeight());
             ini.put("game", "mod", INSTANCE.getGameMode());
-            ini.putComment("game", "mods:" + GameMode.HUMAN_VS_HUMAN + ", " + GameMode.HUMAN_VS_AI + ", "
+            ini.putComment("game", " mods:" + GameMode.HUMAN_VS_HUMAN + ", " + GameMode.HUMAN_VS_AI + ", "
                     + GameMode.AI_VS_AI);
+            
             ini.store();
         }
         catch (InvalidFileFormatException exp)
         {
             System.out.println(exp.getMessage());
-            exp.printStackTrace();
+            exp.printStackTrace(System.err);
         }
         catch (IOException exp)
         {
             System.out.println(exp.getMessage());
-            exp.printStackTrace();
+            exp.printStackTrace(System.err);
         }
     }
     
